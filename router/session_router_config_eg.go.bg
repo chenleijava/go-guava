@@ -1,0 +1,350 @@
+package router
+
+import (
+	"admin-template/com/auth"
+	"github.com/chenleijava/go-guava"
+	"github.com/chenleijava/go-guava/zlog"
+	"github.com/gin-contrib/static"
+	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+	"net/http"
+	"os"
+	"os/exec"
+	"strings"
+)
+
+const (
+	loginRoot              = "/"
+	loginPath              = "/login"
+	validPath              = "/valid"
+	sessionPrefix          = "/auth"
+	forbidden              = "/forbidden"
+	sessionUserNameKey     = "sessionUserNameKey"
+	sessionUserPasswordKey = "sessionUserPasswordKey"
+
+	//3day , unit is seconds
+	sessionMaxAge = 86400 * 3
+	//sessionMaxAge = 1  // test case 1 seconds
+	sessionKey = "sxdq"
+)
+
+// logger
+var logger = zlog.NewLog2Console()
+
+
+
+//route bind impl
+type RoutBindImpl struct {
+	router *gin.Engine
+}
+
+//create routeBind impl
+func NewSessionRouteBindImpl(router *gin.Engine) *RoutBindImpl {
+
+	//session init
+	//session max age : 86400 * 30
+	//one month ?
+	store := sessions.NewCookieStore([]byte("secret"))
+	store.Options(sessions.Options{
+		Path:   "/",
+		MaxAge: sessionMaxAge, //seconds ,default is 3 day
+	})
+	router.Use(sessions.Sessions(sessionKey, store))
+
+	//route impl
+	s := new(RoutBindImpl)
+	s.router = router
+	sessionAuthRouteGroup := router.Group(sessionPrefix)
+	sessionAuthRouteGroup.Use(sessionHandle()) // check session
+
+	//loading static
+	//view and reset check session
+	s.loadingStatic(router)
+	s.bindView(sessionAuthRouteGroup)
+	s.bindRest(sessionAuthRouteGroup)
+
+	//release version can be clear
+	//debug request info
+	sessionAuthRouteGroup.Use(GinRequestInfo(func(req *RequestInfo) {
+		logger.Info("request info", zap.Any("request-info", req))
+	}))
+
+	return s
+}
+
+//session handle
+//route group is authGroup
+//check auth
+func sessionHandle() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		s := sessions.Default(context)
+		v := s.Get(sessionUserNameKey)
+		if v == nil {
+			//not found  auth info  in session ,session expired ,redirect
+			//redirect to login page
+			//zlog.Info("redirect to login page")
+			//status 302
+			context.Redirect(http.StatusFound, forbidden)
+			context.Abort() //not pass next handler
+		}
+	}
+}
+
+//auth ,set cookie
+//login valid ,check
+func valid(context *gin.Context) {
+	//user login struck
+	var loginVals login
+	if err := context.Bind(&loginVals); err != nil {
+		context.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error()})
+		return
+	}
+	//check username and password
+	pwd := auth.GetPwd(loginVals.Username)
+	if pwd == loginVals.Password {
+		session := sessions.Default(context)
+		session.Set(sessionUserNameKey, loginVals.Username)
+		session.Set(sessionUserPasswordKey, loginVals.Password)
+		session.Save()
+		context.JSON(http.StatusOK, gin.H{"code": 0})
+	} else {
+		context.JSON(http.StatusOK, gin.H{"code": -1, "msg": "用户名或者密码错误"})
+		return
+	}
+}
+
+//handle login
+//if login success ,set session
+func toLogin(context *gin.Context) {
+	context.HTML(http.StatusOK, "login.html", gin.H{"title": "后台管理系统"})
+}
+
+//loading html and static source
+func (routBind *RoutBindImpl) loadingStatic(router *gin.Engine) {
+	execPath, _ := exec.LookPath(os.Args[0])
+	temp := guava.SubString(execPath, 0, strings.LastIndex(execPath, "/"))
+	//static file loading
+	router.Delims("{[{", "}]}") //调整模板分隔符号，避免layui template 渲染 冲突
+	router.LoadHTMLGlob(temp + "/resources/static/page/*")
+	router.Use(static.Serve("/", static.LocalFile(temp+"/resources/static/", false))) //加载静态资源文件
+}
+
+//bind view
+func (routBind *RoutBindImpl) bindView(authRouteGroup *gin.RouterGroup) {
+	//login page,not required auth
+	router := routBind.router
+	router.GET(loginPath, toLogin)
+	router.GET(loginRoot, toLogin)
+	router.POST(validPath, valid)
+	router.GET(forbidden, func(context *gin.Context) {
+		context.HTML(http.StatusOK, "forbidden.html", nil)
+	})
+	//404
+	router.NoRoute(func(context *gin.Context) {
+		context.HTML(http.StatusOK, "404.html", nil)
+	})
+	//must required auth
+	//auth view
+	//prefix :/auth/index
+	authRouteGroup.GET("/index", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "index.html", nil)
+	})
+
+	//demo
+	testTpl(authRouteGroup)
+
+}
+
+//bind reset
+func (routBind *RoutBindImpl) bindRest(authRouteGroup *gin.RouterGroup) {
+	//bind reset-ful interface
+}
+
+//tpl demo 模板测试
+func testTpl(router *gin.RouterGroup) {
+	router.GET("/dashboard.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "dashboard.html", nil)
+	})
+	router.GET("/calendar.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "calendar.html", nil)
+	})
+	router.GET("/workbench.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "workbench.html", nil)
+	})
+
+	//base
+	//基础元素
+	router.GET("/btn.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "btn.html", nil)
+	})
+	router.GET("/form.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "form.html", nil)
+	})
+	router.GET("/form_commit.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "form_commit.html", nil)
+	})
+	router.GET("/nav.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "nav.html", nil)
+	})
+	router.GET("/tab.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "tab.html", nil)
+	})
+	router.GET("/progress.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "progress.html", nil)
+	})
+	router.GET("/panel.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "panel.html", nil)
+	})
+	router.GET("/timeline.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "timeline.html", nil)
+	})
+	router.GET("/auxiliary.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "auxiliary.html", nil)
+	})
+	router.GET("/animation.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "animation.html", nil)
+	})
+	router.GET("/badge.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "badge.html", nil)
+	})
+
+	//模块
+	router.GET("/alert.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "alert.html", nil)
+	})
+	router.GET("/upload.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "upload.html", nil)
+	})
+	router.GET("/datetime.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "datetime.html", nil)
+	})
+	router.GET("/carousel.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "carousel.html", nil)
+	})
+	router.GET("/util.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "util.html", nil)
+	})
+	router.GET("/rich-text.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "rich-text.html", nil)
+	})
+	router.GET("/code.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "code.html", nil)
+	})
+	router.GET("/rate.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "rate.html", nil)
+	})
+	router.GET("/colorpicker.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "colorpicker.html", nil)
+	})
+	router.GET("/slider.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "slider.html", nil)
+	})
+	router.GET("/paging.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "paging.html", nil)
+	})
+	router.GET("/lock.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "lock.html", nil)
+	})
+
+	//扩展
+	router.GET("/guide.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "guide.html", nil)
+	})
+	router.GET("/_blank.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "_blank.html", nil)
+	})
+	router.GET("/000.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "000.html", nil)
+	})
+	router.GET("/404.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "404.html", nil)
+	})
+	router.GET("/500.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "500.html", nil)
+	})
+	router.GET("/faq.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "faq.html", nil)
+	})
+	router.GET("/login.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "login.html", nil)
+	})
+
+	router.GET("/label.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "label.html", nil)
+	})
+	router.GET("/photo.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "photo.html", nil)
+	})
+	router.GET("/goods.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "goods.html", nil)
+	})
+	router.GET("/load-animation.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "load-animation.html", nil)
+	})
+
+	router.GET("/pendant.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "pendant.html", nil)
+	})
+
+	//组件 三方扩展
+	router.GET("/auth-tree.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "auth-tree.html", nil)
+	})
+	router.GET("/urban-linkage.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "urban-linkage.html", nil)
+	})
+	router.GET("/form-selects.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "form-selects.html", nil)
+	})
+	router.GET("/form-selects-v4.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "form-selects-v4.html", nil)
+	})
+	router.GET("/vip-push.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "vip-push.html", nil)
+	})
+
+	//表格
+	router.GET("/table-static.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "table-static.html", nil)
+	})
+	router.GET("/table-data.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "table-data.html", nil)
+	})
+	router.GET("/table-data-multiple.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "table-data-multiple.html", nil)
+	})
+	router.GET("/table-tree.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "table-tree.html", nil)
+	})
+
+	//统计图
+	router.GET("/chart.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "chart.html", nil)
+	})
+	router.GET("/chart-rickshaw.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "chart-rickshaw.html", nil)
+	})
+	router.GET("/chart-peity.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "chart-peity.html", nil)
+	})
+	router.GET("/chart-sparkline.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "chart-sparkline.html", nil)
+	})
+	router.GET("/chart-combination.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "chart-combination.html", nil)
+	})
+
+	// 图标
+	router.GET("/icons.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "icons.html", nil)
+	})
+
+	router.GET("/user.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "user.html", nil)
+	})
+	router.GET("/msg.html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "msg.html", nil)
+	})
+
+}

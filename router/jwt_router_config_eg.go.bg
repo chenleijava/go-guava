@@ -1,0 +1,119 @@
+package router
+
+import (
+	"github.com/appleboy/gin-jwt"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"time"
+)
+
+//base on jwt
+//Front and back end separation scene
+func NewJwt(router *gin.Engine) {
+	//Base on JWT config
+	//middle ware config
+	//auth url with jwt
+	jwtMiddleWare := middleWareConfig(authenticator, loginResponse)
+	//no auth jwt login
+	//login Response  can define ,login url prefix '/login'
+	router.POST("/login", jwtMiddleWare.LoginHandler)
+	//group with jwt
+	// authRouter must ,auth url prefix '/auth'
+	jwtAuthRouterGroup := router.Group("/jwtAuth")
+	jwtAuthRouterGroup.Use(jwtMiddleWare.MiddlewareFunc())
+	//bind request with jwt auth
+	bindjwtAuthRest(jwtAuthRouterGroup)
+}
+
+//login check
+type login struct {
+	Username string `form:"username" json:"username" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
+}
+
+
+func authenticator(c *gin.Context) (interface{}, error) {
+	var loginVals login
+	if err := c.Bind(&loginVals); err != nil {
+		return "", jwt.ErrMissingLoginValues
+	}
+	//check user name and password
+	//if true ,return PayloadFunc data
+	//The data is then made available during requests via c.Get("JWT_PAYLOAD").
+	userID := loginVals.Username
+	//password := loginVals.Password
+	if userID != "" {
+		return userID, nil
+	} else {
+		return userID, jwt.ErrFailedAuthentication
+	}
+}
+
+//jwt login response
+func loginResponse(context *gin.Context, httpCode int, token string, expire time.Time) {
+	context.JSON(httpCode, gin.H{"code": 0, "token": token, "expire": expire})
+}
+
+//middle ware config
+//return jwt auth  router
+func middleWareConfig(authenticator func(c *gin.Context) (interface{}, error),
+	loginResponse func(context *gin.Context, httpCode int, token string, expire time.Time)) *jwt.GinJWTMiddleware {
+	//jwt config
+	authMiddleware := &jwt.GinJWTMiddleware{
+		Realm:      "jb28cm~",             //realm
+		Key:        []byte("y7ub8!@#$25"), //  key
+		Timeout:    time.Hour,
+		MaxRefresh: time.Hour,
+
+		Authenticator: authenticator,
+
+		//The data is then made available during requests via c.Get("JWT_PAYLOAD").
+		//eg, userID:=c.Get("JWT_PAYLOAD")
+		PayloadFunc: func(data interface{}) jwt.MapClaims {
+			if userID, ok := data.(string); ok {
+				return jwt.MapClaims{
+					"id": userID,
+				}
+			}
+			return jwt.MapClaims{}
+		},
+		//auth check, default always  return true
+		Authorizator: func(data interface{}, c *gin.Context) bool {
+			return true
+		},
+		//auth failed
+		Unauthorized: func(c *gin.Context, code int, message string) {
+			c.JSON(http.StatusOK, gin.H{"code": code, "message": message})
+		},
+		// TokenLookup is a string in the form of "<source>:<name>" that is used
+		// to extract token from the request.
+		// Optional. Default value "header:Authorization".
+		// Possible values:
+		// - "header:<name>"
+		// - "query:<name>"
+		// - "cookie:<name>"
+		TokenLookup: "header:Authorization",
+		//TokenLookup: "query:token",
+		// TokenLookup: "cookie:token",
+
+		// TokenHeadName is a string in the header. Default value is "Bearer"
+		TokenHeadName: "Bearer",
+
+		// TimeFunc provides the current time. You can override it to use another time value. This is useful for testing or if your server uses a different time zone than your tokens.
+		TimeFunc: time.Now,
+
+		//login response
+		LoginResponse: loginResponse,
+		//{
+		//	"expire": "2018-08-03T23:13:42+08:00",
+		//	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MzMzMDkyMjIsImlkIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTUzMzMwNTEyMH0.tM8Y3QiPkjJCN_qgHgkXpddvf5OZI2SnPQ5ZMvKakAE"
+		//}
+	}
+	return authMiddleware
+}
+
+//http -f GET localhost:9527/auth/is/login "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MzU0MjczNzQsImlkIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTUzNTQyMzc3NH0.kGhuJAtDuQ9KSIp7OyenpGEnB9qqLHtSIn4jRMu80EU"  "Content-Type: application/json"
+//bind auth rest with jwt
+// prefix url  '/jwtAuth/xxx'
+func bindjwtAuthRest(jwtAuthRouterGroup *gin.RouterGroup) {
+}

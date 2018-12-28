@@ -1,0 +1,23 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Go template
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+vendor
+zlog/log
+/rpc/rpc_server/go_build_grpc_server_go
+/rpc/rpc_client/go_build_grpc_client_go
+/go2cache/TestGetCacheChannel_in_github_com_chenleijava_go_guava_go2cache
+/go2cache.v2/TestGetCacheChannel_in_github_com_chenleijava_go_guava_go2cache_v2
+.idea
+/go2cache/TestGetCacheChannel_in_github_com_chenleijava_go_guava_go2cache_v2

@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package com.dsp.sdk2setting.mq.api;
+
+message Dau {
+    string deviceID = 1;
+    string channelName = 2;
+}
