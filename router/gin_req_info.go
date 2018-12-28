@@ -2,10 +2,14 @@ package router
 
 import (
 	"bytes"
+	"github.com/chenleijava/go-guava/zlog"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"time"
 )
+
+
+var requestInfoLogger=zlog.NewLog2Console();
 
 
 //base request info
@@ -35,6 +39,7 @@ func (w *bodyWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
+
 //Get the basic information of the gin request
 //f hand RequestInfo
 func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
@@ -56,7 +61,7 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 		if len(c.Errors) > 0 {
 			// Append error field if this is an erroneous request.
 			for _, e := range c.Errors.Errors() {
-				logger.Error("Append error field if this is an erroneous request", zap.String("error", e))
+				requestInfoLogger.Error("Append error field if this is an erroneous request", zap.String("error", e))
 			}
 		} else {
 			//build request and response detail
