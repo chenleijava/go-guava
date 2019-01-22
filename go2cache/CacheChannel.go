@@ -18,7 +18,7 @@ func GetCacheChannel() *CacheChannel {
 		synOnce.Do(func() {
 			//init cache channel
 			cacheChannel = &CacheChannel{}
-			cacheChannel.initCacheChannel()
+			_ = cacheChannel.initCacheChannel()
 		})
 	}
 	return cacheChannel
@@ -118,7 +118,7 @@ func (c *CacheChannel) SetProtoBuf(region, key string, message proto.Message) {
 	//set into mem cache
 	//pb struck
 	memoryCache, _ := c.mmp.BuildCache(region)
-	memoryCache.(*MemoryCache).Put(key, message)
+	_ = memoryCache.(*MemoryCache).Put(key, message)
 
 	//set redis cache
 	redisCache, _ := c.rdp.BuildCache(region)
@@ -146,7 +146,7 @@ func (c *CacheChannel) Set(region, key string, value interface{}) {
 
 //send evict cmd to nodes
 func (c *CacheChannel) sendEvictCmd(region, key string) {
-	log.Println("发送清理指令:", region+"@"+key)
+	//log.Println("发送清理指令:", region+"@"+key)
 	c.psb.SendEvictCmd(region, key)
 }
 

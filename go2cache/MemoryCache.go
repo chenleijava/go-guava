@@ -1,6 +1,8 @@
 package go2cache
 
 import (
+	//https://github.com/bluele/gcache
+	_ "github.com/bluele/gcache"
 	"sync"
 )
 
@@ -35,7 +37,7 @@ func (cache *MemoryCache) Put(key string, value interface{}) error {
 	lock := cache.lock
 	lock.Lock()
 	defer lock.Unlock()
-	cache.cacheObjectMap[key] =value
+	cache.cacheObjectMap[key] = value
 	return nil
 }
 
