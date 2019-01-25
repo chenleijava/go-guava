@@ -59,11 +59,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
+  digest = "1:38f00d85208f9f51e51063b0b90687d72f3ad61a7b6135d3ab6cb21e7b68dff2"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
   pruneopts = "T"
-  revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
+  revision = "a7658810eb745c2f22927282dea478278103a897"
 
 [[projects]]
   digest = "1:a46c0549dc5facece0e543f3eeb9986f49d62920b385b84f54df7578915b939d"
@@ -95,6 +95,14 @@
   version = "v6.15.1"
 
 [[projects]]
+  digest = "1:92d9d8d25bbab74ef8a3c546c121e24542ac984ccdc4f99678e06042a45e71f8"
+  name = "github.com/go-sql-driver/mysql"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "72cd26f257d44c1114970e19afddcd812016007e"
+  version = "v1.4.1"
+
+[[projects]]
   digest = "1:a2ecb56e5053d942aafc86738915fb94c9131bac848c543b8b6764365fd69080"
   name = "github.com/golang/protobuf"
   packages = [
@@ -110,7 +118,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:91b0c65cc5e9afb8817d6b53946a228ab7b1b142a216c61e0644c4c77291678b"
+  digest = "1:879dec2f83b8a470c336b306a162700ffde5f5903046c405adf9a3519caff165"
   name = "github.com/influxdata/influxdb1-client"
   packages = [
     ".",
@@ -118,7 +126,7 @@
     "pkg/escape",
   ]
   pruneopts = "T"
-  revision = "f8cdb5d5f1752d3578a055342232883f45b7283d"
+  revision = "16c852ea613fa2d42fcdccc9a8b0802a8bdc6140"
 
 [[projects]]
   branch = "master"
@@ -241,7 +249,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f758c83a22e6df9326129cfc7b8b6c0e6898c29ec64e8b6f99d8ca9208df4f06"
+  digest = "1:0ef79f0d58752e0511f9db8687005343854847f52a17d932bbab9bf82dc78fee"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -253,15 +261,15 @@
     "trace",
   ]
   pruneopts = "T"
-  revision = "ed066c81e75eba56dd9bd2139ade88125b855585"
+  revision = "d26f9f9a57f3fab6a695bec0d84433c2c50f8bbf"
 
 [[projects]]
   branch = "master"
-  digest = "1:834050724b6a8b1d60107c4febf895b9714adcd3b1c037eba02f899b5941f45a"
+  digest = "1:c3727e846ccc944f4e295e9c65f2ec4036e1a0f41fdf2d19f9ebef8fad2de280"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "T"
-  revision = "770c60269bf0ef965e9e7ac8bedcb6bca2a1cefd"
+  revision = "b90733256f2e882e81d52f9126de08df5615afd9"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -287,12 +295,20 @@
   version = "v0.3.0"
 
 [[projects]]
+  digest = "1:1469235a5a8e192cfe6a99c4804b883a02f0ff96a693cd1660515a3a3b94d5ac"
+  name = "google.golang.org/appengine"
+  packages = ["cloudsql"]
+  pruneopts = "T"
+  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
+  version = "v1.4.0"
+
+[[projects]]
   branch = "master"
-  digest = "1:1aa609a0033ef2927e083f2e5e07203ca35fe21c4a24b563de9fea16ddaae9ba"
+  digest = "1:2255fee1df9431ec9c0a373a4e112a60b28ae435d7af57d69f4f2e2e86800cad"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "T"
-  revision = "db91494dd46c1fdcbbde05e5ff5eb56df8f7d79a"
+  revision = "8819c946db4494a2259bf100a377f51aa585d893"
 
 [[projects]]
   digest = "1:adec72b8770ba7ad04c7a5a8ef8c6cc13a766bd11f900b60f360303b4f56e0b1"
@@ -358,6 +374,25 @@
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
   version = "v2.2.2"
 
+[[projects]]
+  digest = "1:1d112c68ead41ca44aec2f79375b42552657400cbdceffa86af5bfd8ce1ff3ec"
+  name = "upper.io/db.v3"
+  packages = [
+    ".",
+    "internal/cache",
+    "internal/cache/hashstructure",
+    "internal/immutable",
+    "internal/sqladapter",
+    "internal/sqladapter/compat",
+    "internal/sqladapter/exql",
+    "lib/reflectx",
+    "lib/sqlbuilder",
+    "mysql",
+  ]
+  pruneopts = "T"
+  revision = "2f58dea678dbdcd3710158e8572025ef4d2c6df7"
+  version = "v3.5.7"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -384,6 +419,7 @@
     "golang.org/x/net/context",
     "google.golang.org/grpc",
     "gopkg.in/natefinch/lumberjack.v2",
+    "upper.io/db.v3/mysql",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

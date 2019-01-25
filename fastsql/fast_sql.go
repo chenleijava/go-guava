@@ -14,6 +14,7 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	_ "upper.io/db.v3/mysql"
 )
 
 var (
