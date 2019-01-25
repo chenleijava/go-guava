@@ -9,6 +9,11 @@ type RedisCache struct {
 	region      string // region   -->  redis_name_space+":"+region
 }
 
+//get redis client
+func (cache *RedisCache) RedisClient() *redis.Client{
+	return cache.redisClient
+}
+
 //build region redis cache
 //must call this function!!!
 func (cache *RedisCache) BuildKey(key string) string {

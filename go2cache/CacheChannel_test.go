@@ -3,6 +3,7 @@ package go2cache
 import (
 	"github.com/chenleijava/go-guava"
 	"github.com/chenleijava/go-guava/zlog"
+	"github.com/go-redis/redis"
 	"github.com/golang/protobuf/proto"
 	"go.uber.org/zap"
 	"log"
@@ -66,12 +67,79 @@ func TestGetCacheChannel(t *testing.T) {
 	if ok {
 
 	}
+
+	//get redis client
+	zaddKey := "zaddKey"
+	client := cache.RedisClient()
+	client.ZAdd(zaddKey, redis.Z{Score: 1, Member: "梨子"},
+		redis.Z{Score: 2, Member: "苹果"},
+		redis.Z{Score: 3, Member: "香蕉"})
+	//client.ZRem(zaddKey, "梨子")
+	score := client.ZScore(zaddKey, "香蕉").Val()
+	log.Printf("score:%f", score)
+
+	//score min and max
+	//offset ,count -- 进行数据分页
+	//score 值介于 min 和 max 之间(包括等于 min 或 max )的成员
+	//min 和 max 可以是 -inf 和 +inf
+	members, e := client.ZRangeByScore(zaddKey, redis.ZRangeBy{
+		Min: "-inf", Max: "+inf",
+	}).Result()
+	if e == nil {
+		if len(members) != 0 {
+			for _, v := range members {
+				log.Printf("members:%s", v)
+			}
+		}
+	}
+
+	log.Printf("===========")
+	{
+		members, e := client.ZRevRangeByScore(zaddKey, redis.ZRangeBy{
+			Min: "-inf", Max: "+inf",
+		}).Result()
+		if e == nil {
+			if len(members) != 0 {
+				for _, v := range members {
+					log.Printf("members:%s", v)
+				}
+			}
+		}
+
+	}
+
+	log.Printf("+++++++++++")
+
+	{
+		members, e := client.ZRevRangeByScore(zaddKey, redis.ZRangeBy{
+			Max: "3", Offset: 0, Count: 10,
+		}).Result()
+		if e == nil {
+			if len(members) != 0 {
+				for _, v := range members {
+					log.Printf("members:%s", v)
+				}
+			}
+		}
+	}
+
+	{
+		_ = client.ZRemRangeByScore(zaddKey, "-inf", "+inf").String()
+
+		f, e := client.ZScore(zaddKey, "苹果").Result()
+		if e == nil {
+			log.Printf("%f", f)
+		} else {
+			log.Printf("%s", e.Error())
+		}
+
+	}
+
 	//
 	intValue, _ := strconv.ParseInt("12", 10, 64)
 	logger.Info("parse int", zap.Int64("intValue", intValue))
 	tmp := strconv.FormatInt(12, 10)
 	logger.Info("format int", zap.String("format value", tmp))
-
 
 	tickerChan := time.NewTicker(2 * time.Second).C
 	for true {
@@ -90,18 +158,13 @@ func TestGetCacheChannel(t *testing.T) {
 					cacheChannel.SetProtoBuf(regin, pbKey, dau)
 					dd := cacheChannel.GetBytesLevel2(regin, pbKey)
 					var dauCopy Dau
-					proto.Unmarshal(dd,&dauCopy)
-
-
-					cacheChannel.GetProtoBufLevel2(regin,pbKey,&Dau{})
-					cacheChannel.GetProtoBufLevel2(regin,pbKey,&Dau{})
+					_ = proto.Unmarshal(dd, &dauCopy)
+					cacheChannel.GetProtoBufLevel2(regin, pbKey, &Dau{})
+					cacheChannel.GetProtoBufLevel2(regin, pbKey, &Dau{})
 					dauCacheVo := cacheChannel.GetLevel1(regin, pbKey)
 					if dauCacheVo == dau {
 
 					}
-
-
-
 				}
 			}
 		}
