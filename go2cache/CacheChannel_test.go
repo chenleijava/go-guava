@@ -135,6 +135,15 @@ func TestGetCacheChannel(t *testing.T) {
 
 	}
 
+	{
+
+		//client.SCard()
+		//client.SMembers()
+		//client.SCard()
+
+	}
+
+
 	//
 	intValue, _ := strconv.ParseInt("12", 10, 64)
 	logger.Info("parse int", zap.Int64("intValue", intValue))

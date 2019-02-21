@@ -3,6 +3,8 @@ package guava
 import (
 	"fmt"
 	"github.com/deckarep/golang-set.git"
+	"github.com/json-iterator/go"
+	"log"
 	"testing"
 )
 
@@ -33,6 +35,12 @@ func TestGoSet(t *testing.T) {
 	bonusClasses.Add("Go Programming")
 	bonusClasses.Add("Python Programming")
 
+	d := bonusClasses.String()
+	log.Printf("set to string:%s", d)
+	ds,e:=jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(&bonusClasses)
+	if e==nil{
+		log.Printf("set to json:%s", string(ds))
+	}
 
 	//并集
 	allClasses := requiredClasses.Union(scienceClasses)

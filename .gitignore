@@ -21,3 +21,5 @@ zlog/log
 /go2cache.v2/TestGetCacheChannel_in_github_com_chenleijava_go_guava_go2cache_v2
 .idea
 /go2cache/TestGetCacheChannel_in_github_com_chenleijava_go_guava_go2cache_v2
+/converter/cmd/table2struct-linux.v0.0.3.bin
+/converter/cmd/table2struct-darwin.v0.0.3.bin

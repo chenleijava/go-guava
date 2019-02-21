@@ -9,7 +9,7 @@ import (
 )
 
 
-var requestInfoLogger=zlog.NewLog2Console();
+var requestInfoLogger=zlog.NewLog2Console()
 
 
 //base request info

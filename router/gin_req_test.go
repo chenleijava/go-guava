@@ -27,6 +27,5 @@ func TestStart(t *testing.T) {
 	//start  a service
 	//
 	Start(9898,DebugMode, func(router*gin.Engine) {
-
 	})
 }
