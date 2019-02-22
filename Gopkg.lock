@@ -19,11 +19,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:284991eced0107245670226f7a9d6231291dbd724820f05b85fbb9d191d1d9d3"
+  digest = "1:5b403bb947e5c5da787ae2ad8166b53d193b8fb739da7544d764c1bfdd20eb08"
   name = "github.com/bluele/gcache"
   packages = ["."]
   pruneopts = "T"
-  revision = "472614239ac7e5bc6461e237c798a6ebd5aff8c1"
+  revision = "2016d595ccb01f276e65fd5a285c863feb1903c3"
 
 [[projects]]
   digest = "1:e47d51dab652d26c3fba6f8cba403f922d02757a82abdc77e90df7948daf296e"
@@ -129,12 +129,20 @@
   revision = "16c852ea613fa2d42fcdccc9a8b0802a8bdc6140"
 
 [[projects]]
-  branch = "master"
   digest = "1:b22e2ea75162f24c9ac356be7fd0bd852e81efdc1be3f9a412a695b74d9db1ff"
   name = "github.com/ivpusic/grpool"
   packages = ["."]
   pruneopts = "T"
   revision = "28957a27c9441f178d644aa598bac0aad4dd7bba"
+  version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:cd0765353995ef6496ef7d00051a6795f0d24399a3a2fc1d72a507d421a412dc"
+  name = "github.com/jfcg/sorty"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "c704aff96ddcec26244f5233c8e582bdf4f242eb"
 
 [[projects]]
   digest = "1:5d713dbcad44f3358fec51fd5573d4f733c02cac5a40dcb177787ad5ffe9272f"
@@ -194,19 +202,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d8202d3e0570cfc01a439f0eeacc774ac98d507c1fe4bccf878d8cdf0e078314"
+  digest = "1:934d5297df162704f72202c719aa66167d7b9ea6e158fcfba8678bc6e7defb0f"
   name = "github.com/streadway/amqp"
   packages = ["."]
   pruneopts = "T"
-  revision = "a314942b2fd9dde7a3f70ba3f1062848ce6eb392"
+  revision = "884228600bc96c993ab12fb81ba78bf0c280e88a"
 
 [[projects]]
-  digest = "1:a71a71ef17f7d6fc49b0572bb3d1253a5408dd5abb48d8908ac64a6e3f919ba8"
+  digest = "1:77eb0fee08dd0cc2562a8b17e9fd8ef333c0cfd8ebb5f7bb784f769503f05406"
   name = "github.com/ugorji/go"
   packages = ["codec"]
   pruneopts = "T"
-  revision = "b4c50a2b199d93b13dc15e78929cfb23bfdf21ab"
-  version = "v1.1.1"
+  revision = "8fd0f8d918c8f0b52d0af210a812ba882cc31a1e"
+  version = "v1.1.2"
 
 [[projects]]
   branch = "master"
@@ -249,7 +257,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0ef79f0d58752e0511f9db8687005343854847f52a17d932bbab9bf82dc78fee"
+  digest = "1:0db0b6c7b274d9dabc601ad561684eb9920c227935a50bae55299671120c089e"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -261,15 +269,15 @@
     "trace",
   ]
   pruneopts = "T"
-  revision = "d26f9f9a57f3fab6a695bec0d84433c2c50f8bbf"
+  revision = "3a22650c66bd7f4fb6d1e8072ffd7b75c8a27898"
 
 [[projects]]
   branch = "master"
-  digest = "1:c3727e846ccc944f4e295e9c65f2ec4036e1a0f41fdf2d19f9ebef8fad2de280"
+  digest = "1:d352060669053844f969ace92b78845eaf253591638eed91bda9987dc9d716c1"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "T"
-  revision = "b90733256f2e882e81d52f9126de08df5615afd9"
+  revision = "ec7b60b042fd2c54ad5ceaac0c891bd88843f4a2"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -304,11 +312,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2255fee1df9431ec9c0a373a4e112a60b28ae435d7af57d69f4f2e2e86800cad"
+  digest = "1:58cab6380ee63ac4d983ff73b8f6aab7ab6d0cf8dc82550641017fb8e6a0940e"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "T"
-  revision = "8819c946db4494a2259bf100a377f51aa585d893"
+  revision = "082222b4a5c572e33e82ee9162d1352c7cf38682"
 
 [[projects]]
   digest = "1:adec72b8770ba7ad04c7a5a8ef8c6cc13a766bd11f900b60f360303b4f56e0b1"
@@ -406,8 +414,10 @@
     "github.com/gin-contrib/pprof",
     "github.com/gin-gonic/gin",
     "github.com/go-redis/redis",
+    "github.com/go-sql-driver/mysql",
     "github.com/golang/protobuf/proto",
     "github.com/ivpusic/grpool",
+    "github.com/jfcg/sorty",
     "github.com/json-iterator/go",
     "github.com/magiconair/properties",
     "github.com/rcrowley/go-metrics",

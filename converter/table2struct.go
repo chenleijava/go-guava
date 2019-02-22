@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -153,15 +154,21 @@ func (t *Table2Struct) Run() error {
 
 	// 组装struct
 	var structContent string
+	var tablesContentBuilder strings.Builder
+	tablesContentBuilder.WriteString("//table 基础信息 \n const(\n")
+	m := t.getTableInfos()
+	if m == nil {
+		log.Fatalf("获取tableContent信息失败")
+	}
 	for tableRealName, item := range tableColumns {
 		// 去除前缀
 		if t.prefix != "" {
 			tableRealName = tableRealName[len(t.prefix):]
 		}
 		var tableName string
-		if t.config.StruckToCamel{
+		if t.config.StruckToCamel {
 			tableName = camelString(tableRealName)
-		}else {
+		} else {
 			tableName = tableRealName
 			switch len(tableName) {
 			case 0:
@@ -195,8 +202,11 @@ func (t *Table2Struct) Run() error {
 				tab(depth), tableRealName)
 			structContent += "}\n\n"
 		}
-		fmt.Println(structContent)
+		tablesContentBuilder.WriteString(fmt.Sprintf("%sTable = \"%s\" // %s \n", tableName, tableRealName, m[tableRealName]))
+		//tablesContent += fmt.Sprintf("const %sTable = \"%s\"\n", tableName, tableRealName)
+		//fmt.Println(structContent)
 	}
+	tablesContentBuilder.WriteString(")\n")
 
 	// 如果有引入 time.Time, 则需要引入 time 包
 	var importContent string
@@ -218,7 +228,7 @@ func (t *Table2Struct) Run() error {
 	}
 	defer f.Close()
 
-	f.WriteString(packageName + importContent + structContent)
+	f.WriteString(packageName + importContent + tablesContentBuilder.String() + structContent)
 
 	cmd := exec.Command("gofmt", "-w", filePath)
 	cmd.Run()
@@ -244,6 +254,37 @@ type column struct {
 	TableName     string
 	ColumnComment string
 	Tag           string
+}
+
+//
+type tableInfo struct {
+	TableName    string
+	TableComment string
+}
+
+//key:tableName
+//value:tableContent
+func (t *Table2Struct) getTableInfos() map[string]string {
+	sql := `SELECT TABLE_COMMENT,TABLE_NAME
+		FROM information_schema.TABLES
+		WHERE table_schema = DATABASE()`
+	rows, err := t.db.Query(sql)
+	if err != nil {
+		fmt.Println("Error reading table information: ", err.Error())
+		return nil
+	}
+	defer rows.Close()
+	m := make(map[string]string)
+	for rows.Next() {
+		tinfo := tableInfo{}
+		err = rows.Scan(&tinfo.TableComment, &tinfo.TableName)
+		if err != nil {
+			fmt.Println(err.Error())
+			break
+		}
+		m[tinfo.TableName] = tinfo.TableComment
+	}
+	return m
 }
 
 // Function for fetching schema definition of passed table
