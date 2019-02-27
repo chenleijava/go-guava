@@ -1,7 +1,7 @@
-package guava
+package zlog
 
 import (
-	"github.com/chenleijava/go-guava/zlog"
+	"github.com/chenleijava/go-guava/router"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"log"
@@ -12,18 +12,16 @@ import (
 
 func TestNewZlog(t *testing.T) {
 	mqLogger := GetMqLogger()
-
 	r := gin.New()
-	r.Use(GinRequestInfo(func(req *RequestInfo) {
+	r.Use(router.GinRequestInfo(func(req *router.RequestInfo) {
 		//log flg  below to which log file
 		mqLogger.Info("请求数据详情", zap.Any("request_data_key", req)) //
 	}))
 	r.GET("/mqlog", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"code": 0})
 	})
-	//pprof.Register(r, &pprof.Options{RoutePrefix: "debug/pprof"})
-	log.Printf("http://localhost:8888/debug/pprof")
-	r.Run(":8080")
+	log.Printf("http://localhost:8081/mqlog")
+	_ = r.Run(":8081")
 }
 
 func TestCharts(t *testing.T) {
@@ -34,18 +32,18 @@ func TestCharts(t *testing.T) {
 //deliveryExchange=delivery_exchange
 //deliveryQueue=delivery_queue
 func GetMqLogger() *zap.Logger {
-	syncer := zlog.GetRabbitMqWriteSyncer()
+	syncer := GetRabbitMqWriteSyncer()
 	syncer.InitRabbitMqWriteSyncerDefault(
 		"amqp://chenlei:123@localhost:5672/",
 	)
 	//pb.log_flg_map[id]=
-	return syncer.NewLog2RabbitMq(zlog.AddLogFlg("WxTokenLogFlg"))
+	return syncer.NewLog2RabbitMq(AddLogFlg("WxTokenLogFlg"))
 }
 
 //
 func TestNewLog2FileByLumberJackLog(t *testing.T) {
-	_log := zlog.NewLog2FileByLumberJackLog("./log/jack.log", 1, 0, 0)
-	_log.Write([]byte("qwe123json!!!!"))
+	_log := NewLog2FileByLumberJackLog("./log/jack.log", 1, 0, 0)
+	_, _ = _log.Write([]byte("qwe123json!!!!"))
 }
 
 //1.除 default 外，如果只有一个 case 语句评估通过，那么就执行这个case里的语句；
@@ -81,7 +79,8 @@ func TestSelect(t *testing.T) {
 		select {
 		case x := <-timeOutCurrentTime:
 
-			log.Printf("too much time: %s", time.Unix(int64(x.Unix()), 0).Format(dateTimeStamp))
+			log.Printf("too much time: %s", time.Unix(int64(x.Unix()), 0).
+				Format("2006-01-02 15:04:05.000000"))
 			//if flg == 0 {
 			//	//time_out_current_time = time.After(time.Second * 3)
 			//	flg = 1

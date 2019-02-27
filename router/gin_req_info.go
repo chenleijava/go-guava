@@ -2,15 +2,10 @@ package router
 
 import (
 	"bytes"
-	"github.com/chenleijava/go-guava/zlog"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"github.com/siddontang/go/log"
 	"time"
 )
-
-
-var requestInfoLogger=zlog.NewLog2Console()
-
 
 //base request info
 type RequestInfo struct {
@@ -20,7 +15,8 @@ type RequestInfo struct {
 	Query        string `json:"query"`
 	Ip           string `json:"ip"`
 	UserAgent    string `json:"userAgent"`
-	Time         string `json:"time"`
+	RequestTime  string `json:"requestTime"`
+	ResponseTime string `json:"responseTime"`
 	Latency      string `json:"cost"`
 	ResponseData string `json:"responseData"`
 }
@@ -38,7 +34,6 @@ func (w *bodyWriter) Write(b []byte) (int, error) {
 	w.bodyBuffer.Write(b)
 	return w.ResponseWriter.Write(b)
 }
-
 
 //Get the basic information of the gin request
 //f hand RequestInfo
@@ -61,20 +56,21 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 		if len(c.Errors) > 0 {
 			// Append error field if this is an erroneous request.
 			for _, e := range c.Errors.Errors() {
-				requestInfoLogger.Error("Append error field if this is an erroneous request", zap.String("error", e))
+				log.Errorf("Append error field if this is an erroneous request,error:%s", e)
 			}
 		} else {
 			//build request and response detail
 			req := &RequestInfo{
-				Status:       c.Writer.Status(),  //status
-				Method:       c.Request.Method,  // request method
-				Path:         path,  //uri
-				Query:        query,  //query string
-				Ip:           c.ClientIP(),  // client ip
-				UserAgent:    c.Request.UserAgent(), //user-agent
-				Time:         end.Format("2006-01-02 15:04:05.000000"), //  response time
-				Latency:      latency.String(),  //  cost
-				ResponseData: bodyWriter.bodyBuffer.String(), //get copy data form body buffer
+				Status:       c.Writer.Status(),                          //status
+				Method:       c.Request.Method,                           // request method
+				Path:         path,                                       //uri
+				Query:        query,                                      //query string
+				Ip:           c.ClientIP(),                               // client ip
+				UserAgent:    c.Request.UserAgent(),                      //user-agent
+				RequestTime:  start.Format("2006-01-02 15:04:05.000000"), // requestTime
+				ResponseTime: end.Format("2006-01-02 15:04:05.000000"),   //  response time
+				Latency:      latency.String(),                           //  cost
+				ResponseData: bodyWriter.bodyBuffer.String(),             //get copy data form body buffer
 			}
 			//set body buffer nil ,for gc
 			bodyWriter.bodyBuffer = nil
