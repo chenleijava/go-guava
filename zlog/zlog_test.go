@@ -43,7 +43,14 @@ func GetMqLogger() *zap.Logger {
 //
 func TestNewLog2FileByLumberJackLog(t *testing.T) {
 	_log := NewLog2FileByLumberJackLog("./log/jack.log", 1, 0, 0)
-	_, _ = _log.Write([]byte("qwe123json!!!!"))
+	for true {
+		time.Sleep(2*time.Millisecond)
+		_, _ = _log.Write([]byte(`//1.除 default 外，如果只有一个 case 语句评估通过，那么就执行这个case里的语句；
+//2.除 default 外，如果有多个 case 语句评估通过，那么通过伪随机的方式随机选一个；
+//3.如果 default 外的 case 语句都没有通过评估，那么执行 default 里的语句；
+//4.如果没有 default，那么 代码块会被阻塞，直到有一个 case 通过评估；否则一直阻塞;`))
+	}
+
 }
 
 //1.除 default 外，如果只有一个 case 语句评估通过，那么就执行这个case里的语句；

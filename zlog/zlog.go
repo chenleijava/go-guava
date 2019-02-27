@@ -30,6 +30,7 @@ func NewLog2File(fileName string, addCaller bool, maxSize, maxBackups, days int)
 		MaxBackups: maxBackups, // number of log files   default is not removed
 		MaxAge:     days,       // days  default is not removed
 		Compress:   true,       // disabled by default
+		LocalTime:  true,
 	}
 	encoderCfg := zap.NewProductionEncoderConfig()
 	encoderCfg.TimeKey = "timestamp"
@@ -76,6 +77,7 @@ func NewLog2FileByLumberJackLog(fileName string, maxSize, maxBackups, days int) 
 		MaxBackups: maxBackups, // number of log files   default is not removed
 		MaxAge:     days,       // days  default is not removed
 		Compress:   true,       // disabled by default
+		LocalTime:  true,
 	}
 	return lumberjackLog
 }
@@ -114,7 +116,7 @@ type RabbitMqWriteSyncer struct {
 	//
 	mqTemplate *p.Producer
 	//
-	tunnyPool  *tunny.Pool
+	tunnyPool *tunny.Pool
 }
 
 //write to rabbitmq
