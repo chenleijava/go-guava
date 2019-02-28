@@ -25,7 +25,9 @@ func TestGinRequestInfo(t *testing.T) {
 
 func TestStart(t *testing.T) {
 	//start  a service
-	//
-	Start(9898,DebugMode, func(router*gin.Engine) {
+	Start(443, DebugMode, "./ssl/1.crt", "./ssl/2.key", func(r *gin.Engine) {
+		r.GET("/v1/load", func(context *gin.Context) {
+			context.JSON(http.StatusOK, gin.H{"code": 0})
+		})
 	})
 }

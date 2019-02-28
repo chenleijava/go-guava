@@ -21,11 +21,10 @@ const (
 //base on gin framework
 //this method must be hook!!!
 //routeBindImpl : bind-reset or bind-view ---> route config!?
-func Start(serverPort int, mode string, routeBindImpl func(route *gin.Engine)) {
+func Start(serverPort int, mode, certFile, keyFile string, routeBindImpl func(route *gin.Engine)) {
 
 	//router
 	router := router(mode)
-
 
 	var address = fmt.Sprintf(":%d", serverPort)
 	srv := &http.Server{
@@ -33,20 +32,24 @@ func Start(serverPort int, mode string, routeBindImpl func(route *gin.Engine)) {
 		Handler: router,
 	}
 
-
 	//router logic bind-rest or bind-view ?!
 	routeBindImpl(router)
 
-
 	log.Printf("listen port:%s", address)
 	go func() {
-		// service connections
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+		if certFile != "" && keyFile != "" {
+			// service connections
+			if err := srv.ListenAndServeTLS(certFile, keyFile);
+				err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s\n", err)
+			}
+		} else {
+			// service connections
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s\n", err)
+			}
 		}
 	}()
-
-
 
 	// Wait for interrupt signal to gracefully shutdown the server with
 	// a timeout of 5 seconds.
