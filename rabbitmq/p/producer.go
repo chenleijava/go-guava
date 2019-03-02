@@ -1,6 +1,7 @@
 package p
 
 import (
+	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
 	"log"
 	"sync"
@@ -51,11 +52,11 @@ func RabbitmqConn(url string) (*amqp.Connection, *error) {
 		log.Printf("connect closing case:%s ", <-conn.NotifyClose(make(chan *amqp.Error)))
 		log.Printf("close producers channel,conn!")
 		for _, p := range Producers {
-			p.ch.Close()
+			_ = p.ch.Close()
 			p.ch = nil// next retry connect
 		}
 		//close conn,begin to reconnect
-		conn.Close()
+		_ = conn.Close()
 		//try to re connect!
 		reconnect(url)
 	}()
@@ -63,7 +64,7 @@ func RabbitmqConn(url string) (*amqp.Connection, *error) {
 	//init producers
 	for _, p := range Producers {
 		if p.ch == nil {
-			p.initProducer(conn)
+			_ = p.initProducer(conn)
 		}
 	}
 	log.Printf("init producer done")
@@ -115,7 +116,11 @@ func (p *Producer) initProducer(conn *amqp.Connection) error {
 
 //Send msg to mq
 func (p *Producer) Send(data *[]byte) error {
-	return p.ch.Publish(p.ExchangeName, p.RouteKey, false, false, amqp.Publishing{Body: *data})
+	if p.ch!=nil{
+		return p.ch.Publish(p.ExchangeName, p.RouteKey, false, false, amqp.Publishing{Body: *data})
+	}else {
+		return errors.New("reconnecting!")
+	}
 }
 
 //断线重连
@@ -124,7 +129,7 @@ func reconnect(url string) {
 	for true {
 		_, err := RabbitmqConn(url)
 		if err != nil {
-			log.Printf("reconnect error:%s", err)
+			log.Printf("reconnect error:%s", *err)
 			time.Sleep(3 * time.Second)
 		} else {
 			log.Printf("re-connect success>>>>>>>>>")

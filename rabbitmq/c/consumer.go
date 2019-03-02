@@ -16,9 +16,9 @@ const (
 
 //消费者
 type Consumer struct {
-	QueueName           string             // consumer listen queue
-	Handle              func(data *[]byte) // hand mq message
-	ConcurrentConsumers int                // 并发消费个数
+	QueueName           string                   // consumer listen queue
+	Handle              func(data *[]byte)  // hand mq message
+	ConcurrentConsumers int                      // 并发消费个数
 }
 
 //初始化mq链接
@@ -51,7 +51,7 @@ func RabbitmqConn(url string) (*amqp.Connection, *error) {
 		// Waits here for the channel to be closed
 		log.Printf("connect closing case:%s ", <-conn.NotifyClose(make(chan *amqp.Error)))
 		//begin to reconnect
-		conn.Close()
+		_ = conn.Close()
 		reconnect(url)
 	}()
 
@@ -82,7 +82,7 @@ func reconnect(url string) {
 }
 
 //初始化 consumer
-func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers int, handle func(data *[]byte)) *error {
+func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers int, handle func(data *[]byte) ) *error {
 	for i := 0; i != concurrentConsumers; i++ {
 		channel, err := conn.Channel()
 		if err != nil {
@@ -100,11 +100,11 @@ func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers i
 			return &err
 		}
 		//channel qps
-		channel.Qos(prefetchCount, 0, false)
+		_ = channel.Qos(prefetchCount, 0, false)
 		deliveries, err := channel.Consume(
 			queue.Name,            // queue
 			queueName+"_consumer", // consumer
-			true,                  // auto ack
+			true,                  // auto ack is true
 			false,                 // exclusive
 			false,                 // no local
 			false,                 // no wait
@@ -113,8 +113,10 @@ func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers i
 		if err != nil {
 			return &err
 		}
+		//
 		go func() {
 			for msg := range deliveries {
+				// 逻辑处理
 				handle(&msg.Body)
 			}
 		}()

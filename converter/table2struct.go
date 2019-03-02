@@ -15,7 +15,7 @@ import (
 var typeForMysqlToGo = map[string]string{
 	"int":                "int32",
 	"integer":            "int32",
-	"tinyint":            "int",
+	"tinyint":            "byte",
 	"smallint":           "int",
 	"mediumint":          "int",
 	"bigint":             "int64",

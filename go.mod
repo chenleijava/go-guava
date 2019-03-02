@@ -22,6 +22,7 @@ require (
 	github.com/mattn/go-isatty v0.0.4
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 	github.com/modern-go/reflect2 v1.0.1
+	github.com/pkg/errors v0.8.0
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a
 	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967
 	github.com/siddontang/go v0.0.0-20180604090527-bdc77568d726
