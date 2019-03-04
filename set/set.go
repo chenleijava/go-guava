@@ -46,4 +46,4 @@ package guava
 ////Do you have the following classes? Welding, Automotive and English?
 //fmt.Println(allClasses.IsSuperset(mapset.NewSetFromSlice([]interface{}{"Welding", "Automotive", "English"}))) //true
 //https://github.com/deckarep/golang-set.git
-import _ "github.com/deckarep/golang-set.git"
+import _ "github.com/deckarep/golang-set"

@@ -6,6 +6,7 @@ require (
 	github.com/Jeffail/tunny v0.0.0-20181108205650-4921fff29480
 	github.com/astaxie/beego v1.11.1
 	github.com/bluele/gcache v0.0.0-20190203144525-2016d595ccb0
+	github.com/deckarep/golang-set v1.7.1
 	github.com/gin-contrib/cors v0.0.0-20170318125340-cf4846e6a636
 	github.com/gin-contrib/gzip v0.0.0-20190101123152-0eb78e93402e
 	github.com/gin-contrib/pprof v0.0.0-20170318162728-cea200e02ddd

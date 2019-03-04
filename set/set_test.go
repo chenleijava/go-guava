@@ -1,20 +1,35 @@
 package guava
 
 import (
+	"container/list"
 	"fmt"
-	"github.com/deckarep/golang-set.git"
+	"github.com/deckarep/golang-set"
 	"github.com/json-iterator/go"
 	"log"
 	"testing"
 )
 
+
+
+
 func TestGoSet(t *testing.T) {
+
+	tmpList := list.New()
+	tmpList.PushBack(1)
+	tmpList.PushBack(2)
+	tmpList.PushBack(3)
+	tmpList.Len()
+	for e := tmpList.Front(); e != nil; e = e.Next() {
+		log.Printf("%d", e.Value)
+	}
 
 	requiredClasses := mapset.NewSet()
 	requiredClasses.Add("Cooking")
 	requiredClasses.Add("English")
 	requiredClasses.Add("Math")
 	requiredClasses.Add("Biology")
+	l := requiredClasses.Cardinality()
+	log.Printf("len:%d", l)
 
 	scienceSlice := []interface{}{"Biology", "Chemistry", "Math", "Welding"}
 	scienceClasses := mapset.NewSetFromSlice(scienceSlice)
@@ -37,8 +52,8 @@ func TestGoSet(t *testing.T) {
 
 	d := bonusClasses.String()
 	log.Printf("set to string:%s", d)
-	ds,e:=jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(&bonusClasses)
-	if e==nil{
+	ds, e := jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(&bonusClasses)
+	if e == nil {
 		log.Printf("set to json:%s", string(ds))
 	}
 
@@ -61,4 +76,5 @@ func TestGoSet(t *testing.T) {
 
 	//Do you have the following classes? Welding, Automotive and English?
 	fmt.Println(allClasses.IsSuperset(mapset.NewSetFromSlice([]interface{}{"Welding", "Automotive", "English"}))) //true
+
 }
