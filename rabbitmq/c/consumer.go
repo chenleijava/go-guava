@@ -10,15 +10,13 @@ import (
 //https://github.com/rabbitmq/rabbitmq-tutorials/tree/master/go
 var Consumers []*Consumer
 
-const (
-	prefetchCount = 16
-)
-
 //消费者
 type Consumer struct {
-	QueueName           string                   // consumer listen queue
-	Handle              func(data *[]byte)  // hand mq message
-	ConcurrentConsumers int                      // 并发消费个数
+	QueueName           string                          // consumer listen queue
+	Handle              func(data *amqp.Delivery) error // hand mq message
+	ConcurrentConsumers int                             // 并发消费个数
+	PrefetchCount       int                             // 每次消费者从队列中一次可以获取的消息个数
+	AutoAck             bool                            // 消费是否自动应答
 }
 
 //初始化mq链接
@@ -57,7 +55,9 @@ func RabbitmqConn(url string) (*amqp.Connection, *error) {
 
 	//初始化消费端
 	for _, consumer := range Consumers {
-		err := initConsumer(conn, consumer.QueueName, consumer.ConcurrentConsumers, consumer.Handle)
+		err := initConsumer(conn, consumer.QueueName, consumer.ConcurrentConsumers,
+			consumer.PrefetchCount,
+			consumer.AutoAck, consumer.Handle)
 		if err != nil {
 			log.Fatalf("%s", *err)
 			return nil, err
@@ -82,7 +82,11 @@ func reconnect(url string) {
 }
 
 //初始化 consumer
-func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers int, handle func(data *[]byte) ) *error {
+func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers, prefetchCount int,
+	autoAck bool, handle func(data *amqp.Delivery) error) *error {
+	if prefetchCount == 0 {
+		prefetchCount = 16
+	}
 	for i := 0; i != concurrentConsumers; i++ {
 		channel, err := conn.Channel()
 		if err != nil {
@@ -104,7 +108,7 @@ func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers i
 		deliveries, err := channel.Consume(
 			queue.Name,            // queue
 			queueName+"_consumer", // consumer
-			true,                  // auto ack is true
+			autoAck,               // auto ack is true
 			false,                 // exclusive
 			false,                 // no local
 			false,                 // no wait
@@ -117,7 +121,16 @@ func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers i
 		go func() {
 			for msg := range deliveries {
 				// 逻辑处理
-				handle(&msg.Body)
+				err := handle(&msg)
+				//手动ack
+				if !autoAck {
+					if err != nil {
+						//requeue
+						_ = channel.Reject(msg.DeliveryTag, true)
+					} else {
+						_ = channel.Ack(msg.DeliveryTag, false)
+					}
+				}
 			}
 		}()
 	}
