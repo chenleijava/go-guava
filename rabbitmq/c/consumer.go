@@ -17,6 +17,17 @@ type Consumer struct {
 	ConcurrentConsumers int                             // 并发消费个数
 	PrefetchCount       int                             // 每次消费者从队列中一次可以获取的消息个数
 	AutoAck             bool                            // 消费是否自动应答
+	channel             *amqp.Channel                   // 消费端channel
+}
+
+//ack
+func (c *Consumer) Ack(tag uint64, multiple bool) error {
+	return c.channel.Ack(tag, multiple)
+}
+
+//requeue
+func (c *Consumer) Requeue(tag uint64) error {
+	return c.channel.Reject(tag, true)
 }
 
 //初始化mq链接
@@ -57,7 +68,8 @@ func RabbitmqConn(url string) (*amqp.Connection, *error) {
 	for _, consumer := range Consumers {
 		err := initConsumer(conn, consumer.QueueName, consumer.ConcurrentConsumers,
 			consumer.PrefetchCount,
-			consumer.AutoAck, consumer.Handle)
+			consumer.AutoAck,
+			consumer.Handle)
 		if err != nil {
 			log.Fatalf("%s", *err)
 			return nil, err
@@ -121,16 +133,7 @@ func initConsumer(conn *amqp.Connection, queueName string, concurrentConsumers, 
 		go func() {
 			for msg := range deliveries {
 				// 逻辑处理
-				err := handle(&msg)
-				//手动ack
-				if !autoAck {
-					if err != nil {
-						//requeue
-						_ = channel.Reject(msg.DeliveryTag, true)
-					} else {
-						_ = channel.Ack(msg.DeliveryTag, false)
-					}
-				}
+				_ = handle(&msg)
 			}
 		}()
 	}
