@@ -51,6 +51,11 @@ func FormatDate(t *time.Time) string {
 	return t.Format(date)
 }
 
+//format
+func FormatDateTime(t *time.Time) string {
+	return t.Format(datetime)
+}
+
 //format yyyy-MM-dd
 func GetDateBy(timeStamp uint64) string {
 	return time.Unix(int64(timeStamp), 0).Format(date)

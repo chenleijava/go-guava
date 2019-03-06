@@ -82,3 +82,10 @@ func ClearStringMap(mp *map[string]string) () {
 		delete(*mp, k)
 	}
 }
+
+// int to string
+func ToString(i int64) string  {
+	return strconv.FormatInt(i,10)
+}
+
+
