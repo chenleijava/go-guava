@@ -37,7 +37,7 @@ func New(maxSize int, maxWait time.Duration, f func(values []interface{})) *Batc
 		f:              f,
 	}
 
-	//
+	//loop and handle
 	go batch.wait()
 
 	//set flush
@@ -46,6 +46,7 @@ func New(maxSize int, maxWait time.Duration, f func(values []interface{})) *Batc
 	return batch
 }
 
+//block and wait data to handle
 func (b *Batch) setFlush() {
 	go func() {
 		for items := range b.notify {
@@ -98,9 +99,14 @@ func (b *Batch) wait() {
 			if len(b.inner) > 0 {
 				b.flush()
 			}
-		// If the batch has been closed, wipe the batch clean,
-		// close channels & exit the loop.
 		case <-b.close:
+			//if close ,data flush
+			if len(b.inner) > 0 {
+				b.flush()
+			}
+
+			// If the batch has been closed, wipe the batch clean,
+			// close channels & exit the loop.
 			close(b.notify)
 			close(b.close)
 			close(b.add)
@@ -116,6 +122,6 @@ func (b *Batch) wait() {
 
 //flush data to chan
 func (b *Batch) flush() {
-	b.notify <- b.inner
-	b.inner = b.empty
+	b.notify <- b.inner // flush to notify chain
+	b.inner = b.empty   //reset
 }

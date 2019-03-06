@@ -30,7 +30,7 @@ require (
 	github.com/twotwotwo/sorts v0.0.0-20160814051341-bf5c1f2b8553 // indirect
 	github.com/ugorji/go v1.1.2 // indirect
 	github.com/vrischmann/go-metrics-influxdb v0.0.0-20190121110601-4457d7e0175c
-	go.uber.org/atomic v1.3.2 // indirect
+	go.uber.org/atomic v1.3.2
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20181220203305-927f97764cc3
