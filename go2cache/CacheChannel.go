@@ -1,7 +1,8 @@
 package go2cache
 
-import "C"
 import (
+	"encoding/json"
+	"github.com/go-redis/redis"
 	"github.com/golang/protobuf/proto"
 	"log"
 	"sync"
@@ -141,7 +142,7 @@ func (c *CacheChannel) SetProtoBuf(region, key string, message proto.Message) {
 //pusub notify other node (x2cache) evict level1 cache
 func (c *CacheChannel) Set(region, key string, value interface{}) {
 	memoryCache, _ := c.mmp.BuildCache(region)
-	memoryCache.(*MemoryCache).Put(key, value)
+	_ = memoryCache.(*MemoryCache).Put(key, value)
 	redisCache, _ := c.rdp.BuildCache(region)
 	redisCache.(*RedisCache).Set(key, value)
 	//clear leve1 cache
@@ -158,7 +159,7 @@ func (c *CacheChannel) sendEvictCmd(region, key string) {
 func (c *CacheChannel) Evict(region string, keys []string) {
 	cache, _ := c.mmp.BuildCache(region)
 	for _, key := range keys {
-		cache.(*MemoryCache).Delete(key)
+		_ = cache.(*MemoryCache).Delete(key)
 	}
 }
 
@@ -176,3 +177,85 @@ func (c *CacheChannel) GetMemoryProvider() *MemoryProvider {
 func (c *CacheChannel) GetRedisProvider() *RedisProvider {
 	return c.rdp
 }
+
+
+
+//
+type PubSub struct {
+	Client       *redis.Client
+	Channel      string
+	Region       string
+}
+
+//j2cache  发布 订阅消息模块 封装
+const (
+	OptJoin     = iota + 1 // 加入集群
+	OptEvictKey            // 删除集群
+	OptClearKey            // 清理缓存
+	OptQuit                // 退出集群环境
+)
+
+//j2cache command
+type Command struct {
+	Region   string   `json:"region"`
+	Operator int      `json:"operator"`
+	Keys     []string `json:"keys"`
+	Src      int      `json:"src"`
+}
+
+//发送清楚缓存的广播命令
+func (p *PubSub) SendEvictCmd(region string, keys ...string) {
+	data, _ := json.Marshal(&Command{Region: region, Keys: keys, Operator: OptEvictKey})
+	intCmd := p.Client.Publish(p.Channel, data)
+	e := intCmd.Err()
+	if e != nil {
+		log.Printf("error in pubish , info:%s", e.Error())
+	}
+}
+
+//发送清除缓存的广播命令
+func (p *PubSub) SendClearCmd(region string) {
+	data, _ := json.Marshal(&Command{Region: region, Keys: nil, Operator: OptClearKey})
+	intCmd := p.Client.Publish(p.Channel, data)
+	e := intCmd.Err()
+	if e != nil {
+		log.Printf("error in pubish , info:%s", e.Error())
+	}
+}
+
+//初始化订阅
+//基于go-redis,可实现断线自动重连
+func (p *PubSub) Subscribe() {
+	psc := p.Client.Subscribe(p.Channel)
+	//open  , in case of main thread blocking!!!
+	go func() {
+		for {
+			//blocking until receive  data
+			//if disconnect ,will auto retry!!!
+			msg, _ := psc.Receive()
+			switch msg.(type) {
+			case *redis.Message:
+				var cmd Command
+				message := msg.(*redis.Message)
+				e := json.Unmarshal([]byte(message.Payload), &cmd)
+				if e != nil {
+					log.Printf("command unmarshl json error:%s", e)
+				}
+				if cmd.Operator == OptEvictKey { //删除一级缓存数据
+					log.Printf("evict key :%s region:%s", cmd.Keys, cmd.Region)
+					cacheChannel.Evict(cmd.Region, cmd.Keys)
+				} else if cmd.Operator == OptClearKey { //  清除缓存
+					log.Printf("clear cache  key :%s region:%s", cmd.Keys, cmd.Region)
+				} else if cmd.Operator == OptJoin { // 节点加入
+					log.Printf("node-%d join cluster ", cmd.Src)
+				} else if cmd.Operator == OptQuit { //节点离开
+					log.Printf("node-%d quit cluster ", cmd.Src)
+				}
+			case *redis.Subscription:
+				message := msg.(*redis.Subscription)
+				log.Printf("subscription  channel :%s  %s  count:%d\n", message.Channel, message.Kind, message.Count)
+			}
+		}
+	}()
+}
+
