@@ -4,6 +4,7 @@ import (
 	"log"
 	"sync"
 	"testing"
+	"time"
 )
 
 //tracking.delivery.routing.key=delivery_routing_key
@@ -22,13 +23,14 @@ func TestInitRabbitmqConn(t *testing.T) {
 
 	RabbitmqConn("amqp://chenlei:123@localhost:5672/")
 
-	//for true {
+	for true {
 		d := []byte("123")
 		e := p.Send(&d)
 		//log.Printf("send>>>")
 		if e != nil {
 			log.Printf("send err:%s", e.Error())
 		}
-	//}
+		time.Sleep(10*time.Microsecond)
+	}
 	forever.Wait()
 }

@@ -18,7 +18,7 @@ import (
 type PubSub struct {
 	Client       *redis.Client
 	Channel      string
-	CacheChannel *CacheChannel
+	_CacheChannel *CacheChannel
 	Region       string
 }
 
