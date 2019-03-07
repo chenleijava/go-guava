@@ -18,8 +18,6 @@ import (
 type PubSub struct {
 	Client       *redis.Client
 	Channel      string
-
-	cacheChannel *CacheChannel
 	Region       string
 }
 
@@ -79,7 +77,7 @@ func (p *PubSub) Subscribe() {
 				}
 				if cmd.Operator == OptEvictKey { //删除一级缓存数据
 					log.Printf("evict key :%s region:%s", cmd.Keys, cmd.Region)
-					p.cacheChannel.Evict(cmd.Region, cmd.Keys)
+					cacheChannel.Evict(cmd.Region, cmd.Keys)
 				} else if cmd.Operator == OptClearKey { //  清除缓存
 					log.Printf("clear cache  key :%s region:%s", cmd.Keys, cmd.Region)
 				} else if cmd.Operator == OptJoin { // 节点加入
