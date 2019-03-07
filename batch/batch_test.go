@@ -1,7 +1,8 @@
 package batch
 
 import (
-	"go.uber.org/atomic"
+	"github.com/herryg91/gobatch"
+	"github.com/robfig/cron"
 	"log"
 	"sync"
 	"testing"
@@ -33,31 +34,41 @@ func TestNewBatch2(t *testing.T) {
 	// Create a batch with a given size & duration. If the number of items hits the
 	// configured maximum or the given timeout is exceeded, the items are written
 	// to a channel.
-	batch := New(2, time.Second*5, func(values []interface{}) {
+	batch := New(100, time.Second*10, func(values []interface{}) {
 		// do something
 		for _, v := range values {
 			log.Printf("%s", v)
 		}
+		log.Printf("%d", len(values))
 	})
 	//batch.Add("close data to show")
 	//time.Sleep(time.Second*1)
 	//batch.Close()
 
-	var c atomic.Int32
+	//添加的频度大于了定时任务
+	c:=cron.New()
+	_ = c.AddFunc("*/1 * * * * ?", func() {
+		batch.Add("测试数据2")
+	})
+	c.Start()
+
+	wait.Wait()
+}
+
+func TestNew(t *testing.T) {
+	var wait sync.WaitGroup
+	wait.Add(1)
+	batch:=gobatch.NewMemoryBatch(func(workerID int, datas []interface{}) (err error) {
+		for _, v := range datas {
+			log.Printf("workID:%d data:%s",workerID ,v)
+		}
+		return nil
+	},100,time.Second*1,1)
+	log.Printf("begin time>>>>>")
 	for true {
 		// Add some items to the batch
-		batch.Add("test")
-		batch.Add("测试数据")
-		batch.Add("测试数据2")
-		d := c.Inc()
-		if d%2 == 0 {
-			batch.Close() //
-			log.Printf("close>>>")
-			wait.Done()
-			break
-		}
-		time.Sleep(time.Second * 2)
+		_ = batch.Insert("测试数据2")
+		time.Sleep(time.Second * 5)
 	}
 	wait.Wait()
-
 }
