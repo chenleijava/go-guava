@@ -50,7 +50,7 @@ func (c *CacheChannel) initCacheChannel() error {
 		c.rdp.InitRedisClient()
 		//init psc with redis
 		if cfg.Psb {
-			c.psb = &PubSub{Client: c.rdp.redisClient, Channel: cfg.Channel, _CacheChannel: c, Region: cfg.RedisNameSpace}
+			c.psb = &PubSub{Client: c.rdp.redisClient, Channel: cfg.Channel, cacheChannel: c, Region: cfg.RedisNameSpace}
 			c.psb.Subscribe()
 		}
 		//redis name space
