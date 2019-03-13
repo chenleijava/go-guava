@@ -41,7 +41,7 @@ var typeForMysqlToGo = map[string]string{
 	"longblob":           "[]byte",
 	"date":               "string",     // time.Time
 	"datetime":           "*time.Time", // time.Time
-	"timestamp":          "int64",      // time.Time
+	"timestamp":          "*time.Time", // time.Time
 	"time":               "string",     // time.Time
 	"float":              "float32",
 	"double":             "float64",

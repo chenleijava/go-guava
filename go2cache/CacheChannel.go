@@ -135,7 +135,7 @@ func (c *CacheChannel) SetProtoBuf(region, key string, message proto.Message) {
 	redisCache.(*RedisCache).Set(key, bytes)
 
 	//remove other service level-1 cache
-	c.sendEvictCmd(region, key)
+	c.SendEvictCmd(region, key)
 }
 
 //set into cache
@@ -146,11 +146,11 @@ func (c *CacheChannel) Set(region, key string, value interface{}) {
 	redisCache, _ := c.rdp.BuildCache(region)
 	redisCache.(*RedisCache).Set(key, value)
 	//clear leve1 cache
-	c.sendEvictCmd(region, key)
+	c.SendEvictCmd(region, key)
 }
 
 //send evict cmd to nodes
-func (c *CacheChannel) sendEvictCmd(region, key string) {
+func (c *CacheChannel) SendEvictCmd(region, key string) {
 	//log.Println("发送清理指令:", region+"@"+key)
 	c.psb.SendEvictCmd(region, key)
 }
