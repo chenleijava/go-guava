@@ -40,16 +40,43 @@ func (l *List) Range(f func(v interface{}) bool) {
 	}
 }
 
-//
+//get list len
 func (l *List) Len() int {
 	l.lock.RLock()
 	defer l.lock.RUnlock()
 	return l.l.Len()
 }
 
+//get front
+func (l *List) Front() *list.Element {
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+	return l.l.Front()
+}
+
+
+//get back
+func (l *List) Back() *list.Element {
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+	return l.l.Back()
+}
+
+
+
+
+
+
 //push element back
 func (l *List) PushBack(v interface{}) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	l.l.PushBack(v)
+}
+
+//push element back
+func (l *List) PushFront(v interface{}) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	l.l.PushFront(v)
 }
