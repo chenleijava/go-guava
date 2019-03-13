@@ -17,8 +17,17 @@ var logger = zlog.NewLog2Console()
 //test go2cache
 func TestGetCacheChannel(t *testing.T) {
 	cacheChannel := GetCacheChannel()
-	regin := "user_region"
-	cache := cacheChannel.GetRedisCache("user_region")
+	regin := "login_log_region"
+	cache := cacheChannel.GetRedisCache("login_log_region")
+
+	for {
+		select {
+		case <-time.Tick(time.Second * 1):
+
+			cacheChannel.SendEvictCmd(regin,"123")
+		}
+	}
+
 	var key = time.Now().Format("2006-01-02 15:04:05")
 	var filed = key
 	v := cache.HincrBy(key, filed, 1)
@@ -142,7 +151,6 @@ func TestGetCacheChannel(t *testing.T) {
 		//client.SCard()
 
 	}
-
 
 	//
 	intValue, _ := strconv.ParseInt("12", 10, 64)

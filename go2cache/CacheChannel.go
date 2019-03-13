@@ -68,6 +68,12 @@ func (c *CacheChannel) initCacheChannel() error {
 	return nil
 }
 
+//Get mm cache by region
+func (c *CacheChannel) GetMemoryCache(region string) *MemoryCache {
+	memoryCache, _ := c.mmp.BuildCache(region)
+	return memoryCache.(*MemoryCache)
+}
+
 //Get redis cache by region
 func (c *CacheChannel) GetRedisCache(region string) *RedisCache {
 	redisCache, _ := c.rdp.BuildCache(region)
@@ -178,13 +184,11 @@ func (c *CacheChannel) GetRedisProvider() *RedisProvider {
 	return c.rdp
 }
 
-
-
 //
 type PubSub struct {
-	Client       *redis.Client
-	Channel      string
-	Region       string
+	Client  *redis.Client
+	Channel string
+	Region  string
 }
 
 //j2cache  发布 订阅消息模块 封装
@@ -242,7 +246,6 @@ func (p *PubSub) Subscribe() {
 					log.Printf("command unmarshl json error:%s", e)
 				}
 				if cmd.Operator == OptEvictKey { //删除一级缓存数据
-					log.Printf("evict key :%s region:%s", cmd.Keys, cmd.Region)
 					cacheChannel.Evict(cmd.Region, cmd.Keys)
 				} else if cmd.Operator == OptClearKey { //  清除缓存
 					log.Printf("clear cache  key :%s region:%s", cmd.Keys, cmd.Region)
@@ -258,4 +261,3 @@ func (p *PubSub) Subscribe() {
 		}
 	}()
 }
-
