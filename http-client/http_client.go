@@ -10,6 +10,12 @@ const (
 	readWriteTimeOut = 30 * time.Second
 )
 
+
+func Head(url string) int  {
+	r,_:=httplib.Head(url).Response()
+	return r.StatusCode
+}
+
 //Get bytes
 func GetBytes(url string) ([]byte, error) {
 	return httplib.Get(url).SetTimeout(connectTimeOut, readWriteTimeOut).Bytes()

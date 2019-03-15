@@ -54,7 +54,6 @@ func (l *List) Front() *list.Element {
 	return l.l.Front()
 }
 
-
 //get back
 func (l *List) Back() *list.Element {
 	l.lock.RLock()
@@ -62,10 +61,15 @@ func (l *List) Back() *list.Element {
 	return l.l.Back()
 }
 
-
-
-
-
+//remove
+func (l *List) RemoveLast() {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	last := l.l.Back()
+	if last != nil {
+		l.l.Remove(last)
+	}
+}
 
 //push element back
 func (l *List) PushBack(v interface{}) {

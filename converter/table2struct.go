@@ -48,6 +48,7 @@ var typeForMysqlToGo = map[string]string{
 	"decimal":            "float64",
 	"binary":             "string",
 	"varbinary":          "string",
+	"json":               "string",
 }
 
 type Table2Struct struct {

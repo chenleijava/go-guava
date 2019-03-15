@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go.uber.org/zap"
+	"log"
 	"testing"
 )
 
@@ -46,4 +47,9 @@ func TestPostGetObject(t *testing.T) {
 	obj := &Message{}
 	PostGetObject("http://localhost:9527/test/post", msg, obj)
 	sugar.Debugf("data%s", obj.ToString())
+}
+
+func TestHead(t *testing.T) {
+	v := Head("http://cdn.atmob.com/pic/gnu.png")
+	log.Printf("%d", v) // status code
 }
