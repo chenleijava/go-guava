@@ -62,13 +62,15 @@ func (l *List) Back() *list.Element {
 }
 
 //remove
-func (l *List) RemoveLast() {
+func (l *List) RemoveLast() *list.Element {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	last := l.l.Back()
 	if last != nil {
 		l.l.Remove(last)
+		return last
 	}
+	return nil
 }
 
 //push element back
