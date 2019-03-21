@@ -34,7 +34,7 @@ func TestNewBatch2(t *testing.T) {
 	// Create a batch with a given size & duration. If the number of items hits the
 	// configured maximum or the given timeout is exceeded, the items are written
 	// to a channel.
-	batch := New(100, time.Second*10, func(values []interface{}) {
+	batch := New(100, time.Second*3, func(values []interface{}) {
 		// do something
 		for _, v := range values {
 			log.Printf("%s", v)

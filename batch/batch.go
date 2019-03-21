@@ -19,7 +19,7 @@ type (
 		close          chan bool
 		forceFlushChan chan bool
 		f              func([]interface{}) //logic hand
-		mu sync.Mutex// lock max wait time
+		mu             sync.Mutex          // lock max wait time
 	}
 )
 
@@ -50,13 +50,12 @@ func New(maxSize int, maxWait time.Duration, f func(values []interface{})) *Batc
 	return batch
 }
 
-
-
 //block and run data to handle
 func (b *Batch) setFlush() {
 	go func() {
 		for items := range b.notify {
 			b.f(items)
+			items = nil //set nil
 		}
 	}()
 }
@@ -71,8 +70,8 @@ func (b *Batch) Add(item interface{}) {
 }
 
 //ticker to flush data
-func (b *Batch)ticker()  {
-	for   {
+func (b *Batch) ticker() {
+	for {
 		select {
 		// If we've reached the maximum run time
 		// Write batch contents to channel,
@@ -143,7 +142,7 @@ func (b *Batch) run() {
 //flush data to chan
 //thread safe
 func (b *Batch) flush() {
-	b.notify <- b.inner // flush to notify chain
-	b.inner = b.inner[:0]   //reset
+	b.notify <- b.inner   // flush to notify chain ,pass copy value
+	b.inner = b.inner[:0] //reset
 	//log.Printf("reset done  len:%d cap:%d",len(b.inner),cap(b.inner))
 }

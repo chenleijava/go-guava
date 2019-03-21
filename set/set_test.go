@@ -9,15 +9,13 @@ import (
 	"testing"
 )
 
-
-
-
 func TestGoSet(t *testing.T) {
 
 	tmpList := list.New()
 	tmpList.PushBack(1)
 	tmpList.PushBack(2)
 	tmpList.PushBack(3)
+
 	tmpList.Len()
 	for e := tmpList.Front(); e != nil; e = e.Next() {
 		log.Printf("%d", e.Value)
@@ -54,7 +52,12 @@ func TestGoSet(t *testing.T) {
 	log.Printf("set to string:%s", d)
 	ds, e := jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(&bonusClasses)
 	if e == nil {
-		log.Printf("set to json:%s", string(ds))
+		log.Printf("%s", string(ds))
+	}
+	tmpSet := mapset.NewSet()
+	err := jsoniter.Unmarshal(ds, &tmpSet)
+	if err != nil {
+
 	}
 
 	//并集
