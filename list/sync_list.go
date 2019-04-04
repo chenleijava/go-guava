@@ -40,6 +40,18 @@ func (l *List) Range(f func(v interface{}) bool) {
 	}
 }
 
+// Range calls f sequentially for each  value present in the List.
+// If f returns false, range stops the iteration.
+func (l *List) RangeElement(f func(v interface{}) bool) {
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+	for e := l.l.Front(); e != nil; e = e.Next() {
+		if !f(e) {
+			break
+		}
+	}
+}
+
 //get list len
 func (l *List) Len() int {
 	l.lock.RLock()
@@ -85,4 +97,11 @@ func (l *List) PushFront(v interface{}) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	l.l.PushFront(v)
+}
+
+//remove
+func (l *List) Remove(v *list.Element) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	l.l.Remove(v)
 }

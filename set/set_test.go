@@ -13,13 +13,13 @@ func TestGoSet(t *testing.T) {
 
 	tmpList := list.New()
 	tmpList.PushBack(1)
-	tmpList.PushBack(2)
 	tmpList.PushBack(3)
 
-	tmpList.Len()
-	for e := tmpList.Front(); e != nil; e = e.Next() {
-		log.Printf("%d", e.Value)
-	}
+
+
+
+	tmpListStr, _ := jsoniter.Marshal(tmpList)
+	log.Printf("%s", string(tmpListStr))
 
 	requiredClasses := mapset.NewSet()
 	requiredClasses.Add("Cooking")
