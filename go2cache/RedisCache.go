@@ -10,7 +10,7 @@ type RedisCache struct {
 }
 
 //get redis client
-func (cache *RedisCache) RedisClient() *redis.Client{
+func (cache *RedisCache) RedisClient() *redis.Client {
 	return cache.redisClient
 }
 

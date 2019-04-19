@@ -80,6 +80,16 @@ func (c *CacheChannel) GetRedisCache(region string) *RedisCache {
 	return redisCache.(*RedisCache)
 }
 
+//del data form region cache
+func (c *CacheChannel) Delete(region, key string) {
+	//level1
+	_ = c.GetMemoryCache(region).Delete(key)
+	//level2
+	c.GetRedisCache(region).Del(key)
+	//notify
+	c.SendEvictCmd(region, key)
+}
+
 //base protobuf struck ,read from level1 cache
 func (c *CacheChannel) GetLevel1(region, key string) interface{} {
 	memoryCache, _ := c.mmp.BuildCache(region)
@@ -107,8 +117,8 @@ func (c *CacheChannel) GetProtoBufLevel2(region, key string, message proto.Messa
 		log.Printf("GetProtoBufLevel2 error:%s  key:%s", err, key)
 		return nil
 	} else if bytes != nil {
-		proto.Unmarshal(bytes, message)
-		memoryCache.(*MemoryCache).Put(key, message)
+		_ = proto.Unmarshal(bytes, message)
+		_ = memoryCache.(*MemoryCache).Put(key, message)
 		return message
 	} else {
 		return nil

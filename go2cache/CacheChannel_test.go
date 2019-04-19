@@ -20,11 +20,24 @@ func TestGetCacheChannel(t *testing.T) {
 	regin := "login_log_region"
 	cache := cacheChannel.GetRedisCache("login_log_region")
 
+	c := cache.redisClient
+	kk := cache.BuildKey("1")
+	c.HMSet(kk, map[string]interface{}{
+		"like_num": 1,
+	})
+
+	s := c.HMGet(cache.BuildKey("3"), "like_num","x")
+	if len(s.Val()) != 0 {
+		num := s.Val()[0]
+		t, _ := strconv.ParseInt(num.(string), 10, 32)
+		log.Printf("%d", t)
+	}
+
 	for {
 		select {
 		case <-time.Tick(time.Second * 1):
 
-			cacheChannel.SendEvictCmd(regin,"123")
+			cacheChannel.SendEvictCmd(regin, "123")
 		}
 	}
 
