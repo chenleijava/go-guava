@@ -24,13 +24,17 @@ func TestGetCacheChannel(t *testing.T) {
 	kk := cache.BuildKey("1")
 	c.HMSet(kk, map[string]interface{}{
 		"like_num": 1,
+		"x": 102,
 	})
 
-	s := c.HMGet(cache.BuildKey("3"), "like_num","x")
-	if len(s.Val()) != 0 {
-		num := s.Val()[0]
-		t, _ := strconv.ParseInt(num.(string), 10, 32)
-		log.Printf("%d", t)
+	s := cache.HMGet("1", "like_num", "x", "y")
+	if len(s) != 0 {
+		num := s[0] // nil
+		if num != nil {
+			t, _ := strconv.ParseInt(num.(string), 10, 32)
+			log.Printf("%d", t)
+		}
+
 	}
 
 	for {

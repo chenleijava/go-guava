@@ -77,6 +77,12 @@ func (cache *RedisCache) HgetAllStringMap(key string) map[string]string {
 	return cache.redisClient.HGetAll(cache.BuildKey(key)).Val()
 }
 
+//HMGET
+//return  map object ,  value maybe nil
+func (cache *RedisCache) HMGet(key string, fields ...string) []interface{} {
+	return cache.redisClient.HMGet(cache.BuildKey(key), fields...).Val()
+}
+
 //HLen
 func (cache *RedisCache) Hlen(key string) int {
 	return int(cache.redisClient.HLen(cache.BuildKey(key)).Val())
