@@ -87,3 +87,18 @@ func (cache *RedisCache) HMGet(key string, fields ...string) []interface{} {
 func (cache *RedisCache) Hlen(key string) int {
 	return int(cache.redisClient.HLen(cache.BuildKey(key)).Val())
 }
+
+//sadd
+func (cache *RedisCache) SAdd(key string, members ...interface{}) (int64, error) {
+	return cache.redisClient.SAdd(cache.BuildKey(key), members...).Result()
+}
+
+//smembers
+func (cache *RedisCache) SMembers(key string) ([]string, error) {
+	return cache.redisClient.SMembers(cache.BuildKey(key)).Result()
+}
+
+//sremove
+func (cache *RedisCache) SRem(key string, members ...interface{}) (int64, error) {
+	return cache.redisClient.SRem(cache.BuildKey(key), members...).Result()
+}

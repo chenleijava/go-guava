@@ -17,14 +17,40 @@ var logger = zlog.NewLog2Console()
 //test go2cache
 func TestGetCacheChannel(t *testing.T) {
 	cacheChannel := GetCacheChannel()
+
+	{
+		cache := cacheChannel.GetRedisCache("sadd_region")
+		key := "100"
+		_, err := cache.SAdd(key, "123", "23ert")
+		if err != nil {
+			log.Printf("%s", err.Error())
+			return
+		}
+		rst, err := cache.SMembers(key)
+		if err == nil {
+			for _, d := range rst {
+				log.Printf("%s", d)
+			}
+		}
+		cache.SRem(key, "123", "23ert")
+	}
+
 	regin := "login_log_region"
 	cache := cacheChannel.GetRedisCache("login_log_region")
 
 	c := cache.redisClient
 	kk := cache.BuildKey("1")
+
+	rst, err := c.SMembers(kk).Result()
+	if err == nil {
+		for _, d := range rst {
+			log.Printf("%s", d)
+		}
+	}
+
 	c.HMSet(kk, map[string]interface{}{
 		"like_num": 1,
-		"x": 102,
+		"x":        102,
 	})
 
 	s := cache.HMGet("1", "like_num", "x", "y")
