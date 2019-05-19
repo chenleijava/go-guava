@@ -83,6 +83,11 @@ func (cache *RedisCache) HMGet(key string, fields ...string) []interface{} {
 	return cache.redisClient.HMGet(cache.BuildKey(key), fields...).Val()
 }
 
+//HMSet
+func (cache *RedisCache) HMSet(key string, fields map[string]interface{}) *redis.StatusCmd {
+	return cache.redisClient.HMSet(cache.BuildKey(key), fields)
+}
+
 //HLen
 func (cache *RedisCache) Hlen(key string) int {
 	return int(cache.redisClient.HLen(cache.BuildKey(key)).Val())

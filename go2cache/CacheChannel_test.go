@@ -36,6 +36,52 @@ func TestGetCacheChannel(t *testing.T) {
 	//}
 
 	{
+		cache := cacheChannel.GetRedisCache("hmest_region")
+		key := "222"
+		key1 := "333"
+		cache.Hset(key, "like_num", 10)
+		cache.Hset(key1, "like_num", 30)
+		pipe := cache.redisClient.Pipeline()
+		pipe.HGetAll(cache.BuildKey(key))
+		pipe.HGetAll(cache.BuildKey(key1))
+		cmder, err := pipe.Exec()
+		if err == nil {
+			for _, c := range cmder {
+				d := c.(*redis.StringStringMapCmd).Val()
+				log.Printf("like_num:%s", d["like_num"])
+			}
+		}
+		_ = pipe.Discard()
+
+		//discard
+		{
+			cmds, err0 := pipe.Exec()
+			if err0 == nil {
+				for _, c := range cmds {
+					d := c.(*redis.StringStringMapCmd).Val()
+					log.Printf("like_num:%s", d["like_num"])
+				}
+			}
+		}
+
+		//next hgetall
+		{
+			pipe.HGetAll(cache.BuildKey(key))
+
+			{
+				cmds, err0 := pipe.Exec()
+				if err0 == nil {
+					for _, c := range cmds {
+						d := c.(*redis.StringStringMapCmd).Val()
+						log.Printf("like_num:%s", d["like_num"])
+					}
+				}
+			}
+		}
+
+	}
+
+	{
 		cache := cacheChannel.GetRedisCache("sadd_test_region")
 		{
 			d, er := cache.SPopN("qqq", 3)
