@@ -18,21 +18,60 @@ var logger = zlog.NewLog2Console()
 func TestGetCacheChannel(t *testing.T) {
 	cacheChannel := GetCacheChannel()
 
+	//{
+	//	cache := cacheChannel.GetRedisCache("sadd_region")
+	//	key := "100"
+	//	_, err := cache.SAdd(key, "123", "23ert")
+	//	if err != nil {
+	//		log.Printf("%s", err.Error())
+	//		return
+	//	}
+	//	rst, err := cache.SMembers(key)
+	//	if err == nil {
+	//		for _, d := range rst {
+	//			log.Printf("%s", d)
+	//		}
+	//	}
+	//	cache.SRem(key, "123", "23ert")
+	//}
+
 	{
+		cache := cacheChannel.GetRedisCache("sadd_test_region")
+		{
+			d, er := cache.SPopN("qqq", 3)
+			if er == nil {
+				log.Printf("%s", d)
+			}
+		}
+
+		aids := make([]interface{}, 2)
+		aids[0] = 1
+		aids[1] = 2
+		_, err := cache.SAdd("qqq", aids...)
+		if err == nil {
+			d, er := cache.SPopN("qqq", 3)
+			if er == nil {
+				log.Printf("%s", d)
+			}
+		}
+	}
+
+	{
+		//batch test
 		cache := cacheChannel.GetRedisCache("sadd_region")
 		key := "100"
-		_, err := cache.SAdd(key, "123", "23ert")
+		cli := cache.redisClient
+		p := cli.Pipeline()
+		k := cache.BuildKey(key)
+		p.SAdd(k, "1", "200")
+		p.SRem(k, "1", "2")
+		_, err := p.Exec()
 		if err != nil {
 			log.Printf("%s", err.Error())
 			return
 		}
-		rst, err := cache.SMembers(key)
-		if err == nil {
-			for _, d := range rst {
-				log.Printf("%s", d)
-			}
-		}
-		cache.SRem(key, "123", "23ert")
+		_ = p.Close()
+
 	}
 
 	regin := "login_log_region"

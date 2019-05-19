@@ -93,6 +93,11 @@ func (cache *RedisCache) SAdd(key string, members ...interface{}) (int64, error)
 	return cache.redisClient.SAdd(cache.BuildKey(key), members...).Result()
 }
 
+//spopn
+func (cache *RedisCache) SPopN(key string, count int64) ([]string, error) {
+	return cache.redisClient.SPopN(cache.BuildKey(key), count).Result()
+}
+
 //smembers
 func (cache *RedisCache) SMembers(key string) ([]string, error) {
 	return cache.redisClient.SMembers(cache.BuildKey(key)).Result()
