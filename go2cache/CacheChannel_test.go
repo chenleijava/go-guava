@@ -44,14 +44,22 @@ func TestGetCacheChannel(t *testing.T) {
 		pipe := cache.redisClient.Pipeline()
 		pipe.HGetAll(cache.BuildKey(key))
 		pipe.HGetAll(cache.BuildKey(key1))
+		pipe.HGetAll(cache.BuildKey("444"))
 		cmder, err := pipe.Exec()
 		if err == nil {
 			for _, c := range cmder {
-				d := c.(*redis.StringStringMapCmd).Val()
-				log.Printf("like_num:%s", d["like_num"])
+				cmd := c.(*redis.StringStringMapCmd)
+				d := cmd.Val()
+				if len(d)!=0{
+					log.Printf("like_num:%s", d["like_num"])
+				}
 			}
 		}
 		_ = pipe.Discard()
+		e := pipe.Discard()
+		if e != nil {
+
+		}
 
 		//discard
 		{

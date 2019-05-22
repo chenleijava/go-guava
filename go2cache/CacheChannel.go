@@ -126,10 +126,9 @@ func (c *CacheChannel) GetProtoBufLevel2(region, key string, message proto.Messa
 }
 
 //read from level2 cache
-func (c *CacheChannel) GetBytesLevel2(region, key string) ([]byte) {
+func (c *CacheChannel) GetBytesLevel2(region, key string) ([]byte, error) {
 	redisCache, _ := c.rdp.BuildCache(region)
-	dd, _ := redisCache.(*RedisCache).GetBytes(key)
-	return dd
+	return redisCache.(*RedisCache).GetBytes(key)
 }
 
 //base protobuf .set into cache
@@ -138,8 +137,8 @@ func (c *CacheChannel) SetProtoBuf(region, key string, message proto.Message) {
 
 	//set into mem cache
 	//pb struck
-	memoryCache, _ := c.mmp.BuildCache(region)
-	_ = memoryCache.(*MemoryCache).Put(key, message)
+	//memoryCache, _ := c.mmp.BuildCache(region)
+	//_ = memoryCache.(*MemoryCache).Put(key, message)
 
 	//set redis cache
 	redisCache, _ := c.rdp.BuildCache(region)
