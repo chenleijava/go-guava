@@ -31,8 +31,11 @@ type bodyWriter struct {
 //copy response data other buffer
 //write data to response
 func (w *bodyWriter) Write(b []byte) (int, error) {
-	w.bodyBuffer.Write(b)
-	return w.ResponseWriter.Write(b)
+	if w.bodyBuffer != nil {
+		w.bodyBuffer.Write(b)
+		return w.ResponseWriter.Write(b)
+	}
+	return 0, nil
 }
 
 //Get the basic information of the gin request
