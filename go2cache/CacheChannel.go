@@ -137,8 +137,8 @@ func (c *CacheChannel) SetProtoBuf(region, key string, message proto.Message) {
 
 	//set into mem cache
 	//pb struck
-	//memoryCache, _ := c.mmp.BuildCache(region)
-	//_ = memoryCache.(*MemoryCache).Put(key, message)
+	memoryCache, _ := c.mmp.BuildCache(region)
+	_ = memoryCache.(*MemoryCache).Put(key, message)
 
 	//set redis cache
 	redisCache, _ := c.rdp.BuildCache(region)
