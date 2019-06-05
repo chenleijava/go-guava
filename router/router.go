@@ -23,14 +23,14 @@ func router(mode string) *gin.Engine {
 		router.Use(gin.Recovery())
 	}
 
-
 	//gin gzip
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	// cors config
 	{
 		corsConfig := cors.DefaultConfig()
-		corsConfig.AddAllowHeaders("Authorization","Access-Control-Allow-Origin","Origin") //Allow header
+		corsConfig.AddAllowHeaders("Authorization", "Access-Control-Allow-Origin", "Origin") //Allow header
+		corsConfig.AllowOrigins = []string{"*"}
 		corsConfig.AllowAllOrigins = true
 		router.Use(cors.New(corsConfig))
 	}
