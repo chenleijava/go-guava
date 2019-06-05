@@ -31,7 +31,6 @@ func router(mode string) *gin.Engine {
 		corsConfig := cors.DefaultConfig()
 		corsConfig.AddAllowHeaders("Authorization", "Access-Control-Allow-Origin", "Origin") //Allow header
 		corsConfig.AllowOrigins = []string{"*"}
-		corsConfig.AllowAllOrigins = true
 		router.Use(cors.New(corsConfig))
 	}
 
