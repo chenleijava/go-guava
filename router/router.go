@@ -5,6 +5,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 //gin rourter
@@ -28,10 +29,17 @@ func router(mode string) *gin.Engine {
 
 	// cors config
 	{
-		corsConfig := cors.DefaultConfig()
-		corsConfig.AddAllowHeaders("Authorization", "Access-Control-Allow-Origin", "Origin") //Allow header
-		corsConfig.AllowOrigins = []string{"*"}
-		router.Use(cors.New(corsConfig))
+		//corsConfig := cors.DefaultConfig()
+		//corsConfig.AddAllowHeaders("Authorization", "Access-Control-Allow-Origin", "Origin") //Allow header
+		//corsConfig.AllowOrigins = []string{"*"}
+		//router.Use(cors.New(corsConfig))
+		router.Use(cors.New(cors.Config{
+			AllowOriginFunc:  func(origin string) bool { return true },
+			AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
+			AllowHeaders:     []string{"Authorization", "Access-Control-Allow-Origin", "Origin", "Content-Length", "Content-Type"},
+			AllowCredentials: true,
+			MaxAge:           12 * time.Hour,
+		}))
 	}
 
 	//bind router jwt ,session or ws
