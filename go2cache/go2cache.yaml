@@ -1,0 +1,11 @@
+#redis  config
+addr: 127.0.0.1:6379
+password:
+minIdleConns: 0
+poolSize: 0
+db: 0
+channel: x2cache
+redisNameSpace: go2cache
+psb: true
+  #region0,size0;region1,size1; default no limit size
+go2CacheRegions: user_region,0;sadd_region,0;

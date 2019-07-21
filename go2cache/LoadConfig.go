@@ -3,7 +3,8 @@ package go2cache
 import (
 	"fmt"
 	"github.com/chenleijava/go-guava"
-	"github.com/magiconair/properties"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"log"
 	"strconv"
 	"strings"
@@ -18,21 +19,24 @@ func GetConfig() *RedisConfig {
 	if cfg == nil {
 		once.Do(func() {
 			//loading redis config
-			pp, ee := properties.LoadFile(guava.ExePath()+"/resources/config/go2cache.properties", properties.UTF8)
+			configData, ee := ioutil.ReadFile(guava.ExePath()+"/resources/config/go2cache.yaml")
 			if ee != nil {
 				//load form base config
-				pp, ee = properties.LoadFile(guava.ExePath()+"/config/go2cache.properties", properties.UTF8)
+				tmp,ee:=ioutil.ReadFile(guava.ExePath()+"/config/go2cache.yaml")
 				if ee != nil {
 					log.Panicf("load redis config bad error:%s , config must be in `/resources` or `/config` path !", ee.Error())
 				}
+				configData=tmp
 			}
-			var _cfg RedisConfig
-			if err := pp.Decode(&_cfg); err != nil {
-				log.Fatalf("load config  error:%s", err.Error())
-			}
-			pp.ClearComments()
 
-			go2cacheRegions := _cfg.Go2cacheRegions
+			cfg=&RedisConfig{} //init config object
+
+			err := yaml.Unmarshal(configData, cfg)
+			if err!=nil{
+				log.Fatalf("load redis config bad err:%s",err.Error())
+			}
+
+			go2cacheRegions := cfg.Go2CacheRegions
 			if go2cacheRegions != "" {
 				tmp := strings.Split(go2cacheRegions, ";")
 				for _, v := range tmp {
@@ -41,27 +45,26 @@ func GetConfig() *RedisConfig {
 					}
 					lv := strings.Split(v, ",")
 					s, _ := strconv.Atoi(lv[1])
-					_cfg.Regions = append(_cfg.Regions, &Region{Name: lv[0], Size: s});
+					cfg.Regions = append(cfg.Regions, &Region{Name: lv[0], Size: s});
 				}
 			}
-			cfg = &_cfg
 		})
 	}
 	return cfg
 }
 
-//redis config
+
 type RedisConfig struct {
-	Addr            string    `properties:"addr"`
-	Password        string    `properties:"password"`
-	MinIdleConns    int       `properties:"minIdleConns"`
-	PoolSize        int       `properties:"poolSize"`
-	Db              int       `properties:"db"`
-	Channel         string    `properties:"channel"`
-	RedisNameSpace  string    `properties:"redisNameSpace"`
-	Psb             bool      `properties:"psb"`
-	Go2cacheRegions string    `properties:"go2CacheRegions"`
-	Regions         []*Region `properties:"-"`
+	Addr string `yaml:"addr"`
+	Password string `yaml:"password"`
+	MinIdleConns int `yaml:"minIdleConns"`
+	PoolSize int `yaml:"poolSize"`
+	Db int `yaml:"db"`
+	Channel string `yaml:"channel"`
+	RedisNameSpace string `yaml:"redisNameSpace"`
+	Psb bool `yaml:"psb"`
+	Go2CacheRegions string `yaml:"go2CacheRegions"`
+	Regions         []*Region `yaml:"-"`
 }
 
 type Region struct {

@@ -1,9 +1,9 @@
 package go2cache
 
 import (
-	"encoding/json"
 	"github.com/go-redis/redis"
 	"github.com/golang/protobuf/proto"
+	jsoniter "github.com/json-iterator/go"
 	"log"
 	"sync"
 )
@@ -218,7 +218,7 @@ type Command struct {
 
 //发送清楚缓存的广播命令
 func (p *PubSub) SendEvictCmd(region string, keys ...string) {
-	data, _ := json.Marshal(&Command{Region: region, Keys: keys, Operator: OptEvictKey})
+	data, _ := jsoniter.Marshal(&Command{Region: region, Keys: keys, Operator: OptEvictKey})
 	intCmd := p.Client.Publish(p.Channel, data)
 	e := intCmd.Err()
 	if e != nil {
@@ -228,7 +228,7 @@ func (p *PubSub) SendEvictCmd(region string, keys ...string) {
 
 //发送清除缓存的广播命令
 func (p *PubSub) SendClearCmd(region string) {
-	data, _ := json.Marshal(&Command{Region: region, Keys: nil, Operator: OptClearKey})
+	data, _ := jsoniter.Marshal(&Command{Region: region, Keys: nil, Operator: OptClearKey})
 	intCmd := p.Client.Publish(p.Channel, data)
 	e := intCmd.Err()
 	if e != nil {
@@ -250,7 +250,7 @@ func (p *PubSub) Subscribe() {
 			case *redis.Message:
 				var cmd Command
 				message := msg.(*redis.Message)
-				e := json.Unmarshal([]byte(message.Payload), &cmd)
+				e := jsoniter.Unmarshal([]byte(message.Payload), &cmd)
 				if e != nil {
 					log.Printf("command unmarshl json error:%s", e)
 				}
