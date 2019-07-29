@@ -1,4 +1,4 @@
-package guava
+package main
 
 import "time"
 

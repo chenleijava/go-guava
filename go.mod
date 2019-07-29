@@ -4,41 +4,39 @@ go 1.12
 
 require (
 	github.com/Jeffail/tunny v0.0.0-20181108205650-4921fff29480
-	github.com/astaxie/beego v1.11.1
-	github.com/bluele/gcache v0.0.0-20190203144525-2016d595ccb0
-	github.com/davidsbond/batch v0.0.0-20180201194229-ecb742a61393 // indirect
+	github.com/astaxie/beego v1.12.0
+	github.com/bluele/gcache v0.0.0-20190518031135-bc40bd653833
 	github.com/deckarep/golang-set v1.7.1
-	github.com/gin-contrib/cors v0.0.0-20170318125340-cf4846e6a636
-	github.com/gin-contrib/gzip v0.0.0-20190101123152-0eb78e93402e
-	github.com/gin-contrib/pprof v0.0.0-20170318162728-cea200e02ddd
-	github.com/gin-contrib/sse v0.0.0-20190125020943-a7658810eb74 // indirect
-	github.com/gin-gonic/gin v1.3.0
-	github.com/go-redis/redis v6.15.1+incompatible
+	github.com/gin-contrib/cors v1.3.0
+	github.com/gin-contrib/gzip v0.0.1
+	github.com/gin-contrib/pprof v1.2.0
+	github.com/gin-gonic/gin v1.4.0
+	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
-	github.com/golang/protobuf v1.2.0
-	github.com/herryg91/gobatch v0.0.0-20180914015017-b2e1f79b7355
-	github.com/influxdata/influxdb1-client v0.0.0-20190124185755-16c852ea613f // indirect
+	github.com/golang/protobuf v1.3.2
+	github.com/golang/snappy v0.0.1 // indirect
+	github.com/herryg91/gobatch v0.0.0-20190726112432-54166d458d8b
+	github.com/influxdata/influxdb1-client v0.0.0-20190402204710-8ff2fc3824fc // indirect
 	github.com/ivpusic/grpool v1.0.0
-	github.com/jfcg/sorty v0.0.0-20190219210605-c704aff96ddc
-	github.com/json-iterator/go v1.1.5
-	github.com/magiconair/properties v1.8.0
-	github.com/onsi/ginkgo v1.7.0 // indirect
-	github.com/onsi/gomega v1.4.3 // indirect
-	github.com/pkg/errors v0.8.0
-	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a
-	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967
+	github.com/jfcg/sorty v0.0.0-20190725065343-876548f06d80
+	github.com/json-iterator/go v1.1.7
+	github.com/nsqio/go-nsq v1.0.7
+	github.com/onsi/ginkgo v1.8.0 // indirect
+	github.com/onsi/gomega v1.5.0 // indirect
+	github.com/pkg/errors v0.8.1
+	github.com/rcrowley/go-metrics v0.0.0-20190706150252-9beb055b7962
+	github.com/robfig/cron v1.2.0
+	github.com/shawnsmithdev/zermelo v0.0.0-20190712023933-72892ed011e9 // indirect
 	github.com/siddontang/go v0.0.0-20180604090527-bdc77568d726
-	github.com/streadway/amqp v0.0.0-20190214183023-884228600bc9
+	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 	github.com/twotwotwo/sorts v0.0.0-20160814051341-bf5c1f2b8553 // indirect
-	github.com/ugorji/go v1.1.2 // indirect
 	github.com/vrischmann/go-metrics-influxdb v0.0.0-20190121110601-4457d7e0175c
-	go.uber.org/atomic v1.3.2 // indirect
+	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
-	go.uber.org/zap v1.9.1
-	golang.org/x/net v0.0.0-20181220203305-927f97764cc3
-	google.golang.org/appengine v1.4.0 // indirect
-	google.golang.org/grpc v1.19.0
-	gopkg.in/natefinch/lumberjack.v2 v2.0.0-20170531160350-a96e63847dc3
+	go.uber.org/zap v1.10.0
+	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80
+	google.golang.org/grpc v1.22.1
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.2.2
 	upper.io/db.v3 v3.5.7+incompatible
 )
