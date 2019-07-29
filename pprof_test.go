@@ -1,4 +1,4 @@
-package main
+package guava
 
 import (
 	"github.com/gin-contrib/pprof"
