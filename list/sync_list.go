@@ -105,3 +105,16 @@ func (l *List) Remove(v *list.Element) {
 	defer l.lock.Unlock()
 	l.l.Remove(v)
 }
+
+//has
+//return e
+func (l *List) Has(v interface{}) (*list.Element, bool) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	for e := l.l.Front(); e != nil; e = e.Next() {
+		if e.Value == v {
+			return e, true
+		}
+	}
+	return nil, false
+}

@@ -44,5 +44,5 @@ func main() {
 	_log.Sugar().Info("grpc server listener:", listener.Addr())
 
 	//start service
-	server.Serve(listener)
+	_ = server.Serve(listener)
 }
