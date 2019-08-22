@@ -1,6 +1,8 @@
 package guava
 
 import (
+	"encoding/binary"
+	"github.com/chenleijava/go-guava/bufpool"
 	"log"
 	"os"
 	"os/exec"
@@ -8,13 +10,11 @@ import (
 	"strings"
 )
 
-
 //获取当前执行文件的相对路径
 func ExePath() string {
 	execPath, _ := exec.LookPath(os.Args[0])
 	return execPath[0:strings.LastIndex(execPath, "/")]
 }
-
 
 //获取source的子串,如果start小于0或者end大于source长度则返回""
 //start:开始index，从0开始，包括0
@@ -30,7 +30,6 @@ func SubString(source string, start int, end int) string {
 	}
 	return string(r[start:end])
 }
-
 
 //设置log库格式化
 func LogFormatInit() {
@@ -56,7 +55,6 @@ func String2Int(value string) int {
 func Int2String(value int) string {
 	return strconv.Itoa(value)
 }
-
 
 // remove from slice
 func Remove(s []string, value string) []string {
@@ -84,8 +82,18 @@ func ClearStringMap(mp *map[string]string) () {
 }
 
 // int to string
-func ToString(i int64) string  {
-	return strconv.FormatInt(i,10)
+func ToString(i int64) string {
+	return strconv.FormatInt(i, 10)
 }
 
+//int to bytes
+func DataToBytes(n interface{}, order binary.ByteOrder) []byte {
+	buf := bufpool.GetBytesBuffer()
+	defer bufpool.PutBytesBuffer(buf)
 
+	err := binary.Write(buf, order, n)
+	if err != nil {
+		log.Fatalf("err:%s", err.Error())
+	}
+	return buf.Bytes()
+}

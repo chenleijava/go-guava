@@ -56,19 +56,19 @@ func TestNewBatch2(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-	var wait sync.WaitGroup
-	wait.Add(1)
-	batch:=gobatch.NewMemoryBatch(func(workerID int, datas []interface{}) (err error) {
-		for _, v := range datas {
-			log.Printf("workID:%d data:%s",workerID ,v)
-		}
-		return nil
-	},100,time.Second*1,1)
-	log.Printf("begin time>>>>>")
-	for true {
-		// Add some items to the batch
-		_ = batch.Insert("测试数据2")
-		time.Sleep(time.Second * 5)
-	}
-	wait.Wait()
+	//var wait sync.WaitGroup
+	//wait.Add(1)
+	//batch:=gobatch.NewMemoryBatch(func(workerID int, datas []interface{}) (err error) {
+	//	for _, v := range datas {
+	//		log.Printf("workID:%d data:%s",workerID ,v)
+	//	}
+	//	return nil
+	//},100,time.Second*1,1)
+	//log.Printf("begin time>>>>>")
+	//for true {
+	//	// Add some items to the batch
+	//	_ = batch.Insert("测试数据2")
+	//	time.Sleep(time.Second * 5)
+	//}
+	//wait.Wait()
 }

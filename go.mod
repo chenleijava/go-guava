@@ -29,6 +29,7 @@ require (
 	github.com/shawnsmithdev/zermelo v0.0.0-20190712023933-72892ed011e9 // indirect
 	github.com/siddontang/go v0.0.0-20180604090527-bdc77568d726
 	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
+	github.com/stretchr/testify v1.3.0
 	github.com/twotwotwo/sorts v0.0.0-20160814051341-bf5c1f2b8553 // indirect
 	github.com/vrischmann/go-metrics-influxdb v0.0.0-20190121110601-4457d7e0175c
 	go.uber.org/atomic v1.4.0 // indirect
