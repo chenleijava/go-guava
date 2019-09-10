@@ -2,6 +2,7 @@ package router
 
 import (
 	"bytes"
+	"github.com/chenleijava/go-guava/bufpool"
 	"github.com/gin-gonic/gin"
 	"github.com/siddontang/go/log"
 	"time"
@@ -47,12 +48,12 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 		path := c.Request.URL.Path
 		query := c.Request.URL.RawQuery //query string
 		//replace writer
-		bodyWriter := &bodyWriter{ResponseWriter: c.Writer, bodyBuffer: bytes.NewBufferString("")}
+		bodyBuf := bufpool.GetBytesBuffer()
+		bodyWriter := &bodyWriter{ResponseWriter: c.Writer, bodyBuffer: bodyBuf}
 		c.Writer = bodyWriter
 
 		//call logic controller
 		c.Next()
-
 		//done
 		end := time.Now()
 		latency := end.Sub(start) //cost time
@@ -75,8 +76,8 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 				Latency:      latency.String(),                           //  cost
 				ResponseData: bodyWriter.bodyBuffer.String(),             //get copy data form body buffer
 			}
-			//set body buffer nil ,for gc
-			bodyWriter.bodyBuffer = nil
+			//reuse bytes buf
+			bufpool.PutBytesBuffer(bodyWriter.bodyBuffer)
 			//pass to hand function/
 			f(req)
 		}
