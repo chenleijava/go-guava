@@ -48,12 +48,15 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 		path := c.Request.URL.Path
 		query := c.Request.URL.RawQuery //query string
 		//replace writer
-		bodyBuf := bufpool.GetBytesBuffer()
+		bodyBuf := bufpool.GetStringBuffer()
+		defer bufpool.PutStringBuffer(bodyBuf)
+
 		bodyWriter := &bodyWriter{ResponseWriter: c.Writer, bodyBuffer: bodyBuf}
 		c.Writer = bodyWriter
 
 		//call logic controller
 		c.Next()
+
 		//done
 		end := time.Now()
 		latency := end.Sub(start) //cost time
@@ -76,10 +79,9 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 				Latency:      latency.String(),                           //  cost
 				ResponseData: bodyWriter.bodyBuffer.String(),             //get copy data form body buffer
 			}
-			//reuse bytes buf
-			bufpool.PutBytesBuffer(bodyWriter.bodyBuffer)
 			//pass to hand function/
 			f(req)
 		}
+
 	}
 }
