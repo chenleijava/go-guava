@@ -10,16 +10,17 @@ import (
 
 //base request info
 type RequestInfo struct {
-	Status       int    `json:"status"`
-	Method       string `json:"method"`
-	Path         string `json:"path"`
-	Query        string `json:"query"`
-	Ip           string `json:"ip"`
-	UserAgent    string `json:"userAgent"`
-	RequestTime  string `json:"requestTime"`
-	ResponseTime string `json:"responseTime"`
-	Latency      string `json:"cost"`
-	ResponseData string `json:"responseData"`
+	Status       int                 `json:"status"`
+	Method       string              `json:"method"`
+	Path         string              `json:"path"`
+	Query        string              `json:"query"`
+	Ip           string              `json:"ip"`
+	UserAgent    string              `json:"userAgent"`
+	RequestTime  string              `json:"requestTime"`
+	ResponseTime string              `json:"responseTime"`
+	Latency      string              `json:"cost"`
+	ResponseData string              `json:"responseData"`
+	Header       map[string][]string `json:"header"`
 }
 
 //read response body
@@ -47,9 +48,10 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 		// some evil middle wares modify this values
 		path := c.Request.URL.Path
 		query := c.Request.URL.RawQuery //query string
+		header := c.Request.Header
 		//replace writer
-		bodyBuf := bufpool.GetStringBuffer()
-		defer bufpool.PutStringBuffer(bodyBuf)
+		bodyBuf := bufpool.GetBytesBuffer()
+		defer bufpool.PutBytesBuffer(bodyBuf)
 
 		bodyWriter := &bodyWriter{ResponseWriter: c.Writer, bodyBuffer: bodyBuf}
 		c.Writer = bodyWriter
@@ -69,7 +71,8 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 			//build request and response detail
 			req := &RequestInfo{
 				Status:       c.Writer.Status(),                          //status
-				Method:       c.Request.Method,                           // request method
+				Method:       c.Request.Method,                           //request method
+				Header:       header,                                     //header info
 				Path:         path,                                       //uri
 				Query:        query,                                      //query string
 				Ip:           c.ClientIP(),                               // client ip
