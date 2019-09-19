@@ -46,10 +46,16 @@ func TestGetCacheChannel(t *testing.T) {
 
 	{
 		cache := cacheChannel.GetRedisCache("hmest_region")
+		allStringMap := cache.HgetAllStringMap("key")
+		if allStringMap != nil {
+
+		}
+
 		key := "222"
 		key1 := "333"
 		cache.Hset(key, "like_num", 10)
 		cache.Hset(key1, "like_num", 30)
+
 		pipe := cache.redisClient.Pipeline()
 		pipe.HGetAll(cache.BuildKey(key))
 		pipe.HGetAll(cache.BuildKey(key1))
@@ -318,7 +324,7 @@ func TestGetCacheChannel(t *testing.T) {
 					dau := &Dau{DeviceID: "1234", ChannelName: "testchannel"}
 					pbKey := "pbKey"
 					cacheChannel.SetProtoBuf(regin, pbKey, dau)
-					dd,_ := cacheChannel.GetBytesLevel2(regin, pbKey)
+					dd, _ := cacheChannel.GetBytesLevel2(regin, pbKey)
 					var dauCopy Dau
 					_ = proto.Unmarshal(dd, &dauCopy)
 					cacheChannel.GetProtoBufLevel2(regin, pbKey, &Dau{})

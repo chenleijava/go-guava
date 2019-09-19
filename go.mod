@@ -7,9 +7,10 @@ require (
 	github.com/astaxie/beego v1.12.0
 	github.com/bluele/gcache v0.0.0-20190518031135-bc40bd653833
 	github.com/deckarep/golang-set v1.7.1
+	github.com/eapache/queue v1.1.0
 	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-contrib/gzip v0.0.1
-	github.com/gin-contrib/pprof v1.2.0
+	github.com/gin-contrib/pprof v1.2.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
