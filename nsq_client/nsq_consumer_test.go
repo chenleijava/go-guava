@@ -23,11 +23,12 @@ func (*ConsumerT) HandleMessage(msg *nsq.Message) error {
 func (*ConsumerQ) HandleMessage(msg *nsq.Message) error {
 	fmt.Printf("Q address:%s; receive message:%s timeStamp:%d\n", msg.NSQDAddress, msg.Body,
 		msg.Timestamp)
+	msg.Finish()
 	return nil
 }
 func TestInitConsumer(t *testing.T) {
 	var wait sync.WaitGroup
 	wait.Add(1)
-	InitConsumer(testTopic, testChannel, &ConsumerQ{}, 3, 100, "127.0.0.1:4161")
+	InitConsumer(testTopic, testChannel, &ConsumerQ{}, 3, 16, "127.0.0.1:4161")
 	wait.Wait()
 }

@@ -7,10 +7,11 @@ import (
 type NsqProducer struct {
 	Address  string
 	producer *nsq.Producer
+	topic    string
 }
 
 //init new producer
-func InitProducer(address string) (*NsqProducer, error) {
+func InitProducer(address, topic string) (*NsqProducer, error) {
 	producer, err := newProducer(address)
 	if err != nil {
 		return nil, err
@@ -18,6 +19,7 @@ func InitProducer(address string) (*NsqProducer, error) {
 	return &NsqProducer{
 		Address:  address,
 		producer: producer,
+		topic:    topic,
 	}, nil
 }
 
@@ -29,6 +31,6 @@ func newProducer(address string) (*nsq.Producer, error) {
 
 // Publish synchronously publishes a message body to the specified topic, returning
 // an error if publish failed
-func (p *NsqProducer) Publish(topic string, body []byte) error{
-	return p.producer.Publish(topic, body)
+func (p *NsqProducer) Publish(body []byte) error {
+	return p.producer.Publish(p.topic, body)
 }
