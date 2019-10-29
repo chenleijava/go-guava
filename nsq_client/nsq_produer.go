@@ -11,16 +11,16 @@ type NsqProducer struct {
 }
 
 //init new producer
-func InitProducer(address, topic string) (*NsqProducer, error) {
+func InitProducer(address, topic string) *NsqProducer {
 	producer, err := newProducer(address)
 	if err != nil {
-		return nil, err
+		return nil
 	}
 	return &NsqProducer{
 		Address:  address,
 		producer: producer,
 		topic:    topic,
-	}, nil
+	}
 }
 
 //do new producer
