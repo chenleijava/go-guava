@@ -338,14 +338,20 @@ func (t *Table2Struct) getColumns(table ...string) (tableColumns map[string][]co
 			//} else {
 			//}
 		}
+
+		//json 模块 转化为驼峰
+		//j := strings.ToLower(col.ColumnName[0:1]) + col.ColumnName[1:]
+
+		j := col.Tag
+
 		if t.enableJsonTag {
 			//col.Json = fmt.Sprintf("`json:\"%s\" %s:\"%s\"`", col.Json, t.config.TagKey, col.Json)
 			if col.Type == "int" || col.Type == "int32" || col.Type == "int64" {
-				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s,%s,omitempty\"`", t.tagKey, col.Tag, col.Tag, "string")
-			}else if col.Type=="string" {
-				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", t.tagKey, col.Tag, col.Tag)
-			}else {
-				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s\"`", t.tagKey, col.Tag, col.Tag)
+				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", t.tagKey, col.Tag, j)
+			} else if col.Type == "string" {
+				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", t.tagKey, col.Tag, j)
+			} else {
+				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s\"`", t.tagKey, col.Tag, j)
 			}
 		} else {
 			col.Tag = fmt.Sprintf("`%s:\"%s\"`", t.tagKey, col.Tag)
@@ -365,7 +371,6 @@ func (t *Table2Struct) camelCase(str string) string {
 		str = strings.Replace(str, t.prefix, "", 1)
 	}
 	var text string
-	//for _, p := range strings.Split(name, "_") {
 	for _, p := range strings.Split(str, "_") {
 		// 字段首字母大写的同时, 是否要把其他字母转换为小写
 		switch len(p) {

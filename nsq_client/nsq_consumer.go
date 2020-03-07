@@ -15,8 +15,8 @@ import (
 func InitConsumer(topic string, channel string, handler nsq.Handler,
 	concurrency, maxInFlight int, address ...string) {
 	cfg := nsq.NewConfig()
-	cfg.MaxAttempts = 65535               //max attempts
-	cfg.LookupdPollInterval = time.Second //lookupd pool interval
+	cfg.MaxAttempts = 65535                    //max attempts
+	cfg.LookupdPollInterval = time.Second * 60 //lookupd pool interval
 	c, err := nsq.NewConsumer(topic, channel, cfg)
 	if err != nil {
 		panic(err)

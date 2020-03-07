@@ -5,6 +5,8 @@ import (
 	"sync"
 )
 
+//https://github.com/jolestar/go-commons-pool
+
 //bytes buf pool
 var byteBufPool = &sync.Pool{
 	New: func() interface{} {
@@ -22,6 +24,7 @@ func PutBytesBuffer(buf *bytes.Buffer) {
 	buf.Reset()
 	byteBufPool.Put(buf)
 }
+
 //
 ////string buf pool
 //var stringBufPool = &sync.Pool{
