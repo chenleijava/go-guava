@@ -15,13 +15,12 @@ require (
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/protobuf v1.3.2
-	github.com/golang/snappy v0.0.1 // indirect
 	github.com/herryg91/gobatch v0.0.0-20190726112432-54166d458d8b
 	github.com/influxdata/influxdb1-client v0.0.0-20190402204710-8ff2fc3824fc // indirect
 	github.com/ivpusic/grpool v1.0.0
 	github.com/jfcg/sorty v0.0.0-20190725065343-876548f06d80
 	github.com/json-iterator/go v1.1.7
-	github.com/nsqio/go-nsq v1.0.7
+	github.com/nsqio/go-nsq v1.0.8
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/pkg/errors v0.8.1
