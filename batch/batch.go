@@ -71,6 +71,8 @@ func (b *Batch) Add(item interface{}) {
 
 //ticker to flush data
 func (b *Batch) ticker() {
+	//flushData time chan
+	flushDataTicker := time.Tick(b.maxWait)
 	for {
 		select {
 		// If we've reached the maximum run time
@@ -78,7 +80,7 @@ func (b *Batch) ticker() {
 		// If  len(b.inner) >0, write batch
 		// contents to channel, clear batched item and add new
 		// item to empty batch.
-		case <-time.Tick(b.maxWait):
+		case <-flushDataTicker:
 			b.mu.Lock()
 			if len(b.inner) > 0 {
 				b.flush()
