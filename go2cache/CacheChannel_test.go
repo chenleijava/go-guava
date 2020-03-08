@@ -171,9 +171,10 @@ func TestGetCacheChannel(t *testing.T) {
 
 	}
 
+	tick := time.Tick(time.Second * 1)
 	for {
 		select {
-		case <-time.Tick(time.Second * 1):
+		case <-tick:
 
 			cacheChannel.SendEvictCmd(regin, "123")
 		}
