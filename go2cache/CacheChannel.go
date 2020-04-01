@@ -87,7 +87,7 @@ func (c *CacheChannel) Delete(region, key string) {
 	//level2
 	c.GetRedisCache(region).Del(key)
 	//notify
-	c.SendEvictCmd(region, key)
+	//c.SendEvictCmd(region, key)
 }
 
 //base protobuf struck ,read from level1 cache
@@ -150,7 +150,7 @@ func (c *CacheChannel) SetProtoBuf(region, key string, message proto.Message) {
 	redisCache.(*RedisCache).Set(key, bytes)
 
 	//remove other service level-1 cache
-	c.SendEvictCmd(region, key)
+	//c.SendEvictCmd(region, key)
 }
 
 //set into cache
@@ -161,7 +161,7 @@ func (c *CacheChannel) Set(region, key string, value interface{}) {
 	redisCache, _ := c.rdp.BuildCache(region)
 	redisCache.(*RedisCache).Set(key, value)
 	//clear leve1 cache
-	c.SendEvictCmd(region, key)
+	//c.SendEvictCmd(region, key)
 }
 
 //send evict cmd to nodes
