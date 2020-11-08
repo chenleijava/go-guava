@@ -13,3 +13,16 @@ GET http://127.0.0.1:9898/v1/load
 
 GET https://10.0.0.193/v1/load
 ###
+
+
+##
+POST  http://127.0.0.1:9091/v1/load
+Content-Type: application/json
+
+{
+  "uid": 10,
+  "name": "大石头"
+}
+
+### bind query
+GET  http://127.0.0.1:9091/v1/bindQuery?uid=10&name=大嘻嘻嘻

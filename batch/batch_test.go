@@ -1,7 +1,6 @@
 package batch
 
 import (
-	"github.com/herryg91/gobatch"
 	"github.com/robfig/cron"
 	"log"
 	"sync"

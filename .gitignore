@@ -31,3 +31,8 @@ zlog/log
 /nsq_client/TestInitProducer_in_github_com_chenleijava_go_guava_nsq_client
 /nsq_client/data/
 /vod-go-sdk/
+/converter/cmd/table2struct-darwin*.bin
+/orm/model/
+/orm/gormt
+/orm/test.db
+/orm/TestGORMStart_in_github_com_chenleijava_go_guava_orm

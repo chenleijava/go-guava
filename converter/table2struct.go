@@ -347,11 +347,11 @@ func (t *Table2Struct) getColumns(table ...string) (tableColumns map[string][]co
 		if t.enableJsonTag {
 			//col.Json = fmt.Sprintf("`json:\"%s\" %s:\"%s\"`", col.Json, t.config.TagKey, col.Json)
 			if col.Type == "int" || col.Type == "int32" || col.Type == "int64" {
-				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", t.tagKey, col.Tag, j)
+				col.Tag = fmt.Sprintf("`%s:\"%s,omitempty\" json:\"%s,omitempty\"`", t.tagKey, col.Tag, j)
 			} else if col.Type == "string" {
-				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", t.tagKey, col.Tag, j)
+				col.Tag = fmt.Sprintf("`%s:\"%s,omitempty\" json:\"%s,omitempty\"`", t.tagKey, col.Tag, j)
 			} else {
-				col.Tag = fmt.Sprintf("`%s:\"%s\" json:\"%s\"`", t.tagKey, col.Tag, j)
+				col.Tag = fmt.Sprintf("`%s:\"%s,omitempty\" json:\"%s\"`", t.tagKey, col.Tag, j)
 			}
 		} else {
 			col.Tag = fmt.Sprintf("`%s:\"%s\"`", t.tagKey, col.Tag)
