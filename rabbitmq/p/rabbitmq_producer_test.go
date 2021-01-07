@@ -30,7 +30,7 @@ func TestInitRabbitmqConn(t *testing.T) {
 		if e != nil {
 			log.Printf("send err:%s", e.Error())
 		}
-		time.Sleep(10*time.Microsecond)
+		time.Sleep(10 * time.Microsecond)
 	}
 	forever.Wait()
 }

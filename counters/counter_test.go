@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-
 func TestCounter_Incr(t *testing.T) {
 	c := NewCounterBox()
 	var counter = c.GetCounter("abc123")

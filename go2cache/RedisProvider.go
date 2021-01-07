@@ -60,8 +60,10 @@ func (p *RedisProvider) GetRegions() []Region {
 //----------------------
 //init redis client flg
 var onceSingleRedisClient sync.Once
+
 //go-redis client
 var client *redis.Client
+
 //get redis client
 //disconnect will try to connect
 func RedisClient() *redis.Client {

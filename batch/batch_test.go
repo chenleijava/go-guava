@@ -45,7 +45,7 @@ func TestNewBatch2(t *testing.T) {
 	//batch.Close()
 
 	//添加的频度大于了定时任务
-	c:=cron.New()
+	c := cron.New()
 	_ = c.AddFunc("*/1 * * * * ?", func() {
 		batch.Add("测试数据2")
 	})

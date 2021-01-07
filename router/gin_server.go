@@ -39,8 +39,7 @@ func Start(serverPort int, mode, certFile, keyFile string, routeBindImpl func(ro
 	go func() {
 		if certFile != "" && keyFile != "" {
 			// service connections
-			if err := srv.ListenAndServeTLS(certFile, keyFile);
-				err != nil && err != http.ErrServerClosed {
+			if err := srv.ListenAndServeTLS(certFile, keyFile); err != nil && err != http.ErrServerClosed {
 				log.Fatalf("listen: %s\n", err)
 			}
 		} else {

@@ -12,7 +12,6 @@ import (
 var db *gorm.DB
 var dbOnce sync.Once
 
-
 //get gorm datasource
 //username:
 //password:

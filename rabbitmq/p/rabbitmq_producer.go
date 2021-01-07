@@ -53,7 +53,7 @@ func RabbitmqConn(url string) (*amqp.Connection, *error) {
 		log.Printf("close producers channel,conn!")
 		for _, p := range Producers {
 			_ = p.ch.Close()
-			p.ch = nil// next retry connect
+			p.ch = nil // next retry connect
 		}
 		//close conn,begin to reconnect
 		_ = conn.Close()
@@ -116,9 +116,9 @@ func (p *Producer) initProducer(conn *amqp.Connection) error {
 
 //Send msg to mq
 func (p *Producer) Send(data *[]byte) error {
-	if p.ch!=nil{
+	if p.ch != nil {
 		return p.ch.Publish(p.ExchangeName, p.RouteKey, false, false, amqp.Publishing{Body: *data})
-	}else {
+	} else {
 		return errors.New("reconnecting!")
 	}
 }

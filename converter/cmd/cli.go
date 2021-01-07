@@ -8,16 +8,18 @@ import (
 )
 
 func main() {
+	println(">>>>>>>>")
+	log.Printf("hello word")
 	parser()
 }
 
 func parser() {
-	dsn := flag.String("dsn", "", "数据库dsn配置")
-	file := flag.String("file", "", "保存路径")
+	dsn := flag.String("dsn", "root:123456@tcp(127.0.0.1:3306)/astrolog?charset=utf8", "数据库dsn配置")
+	file := flag.String("file", "./model.go", "保存路径")
 	table := flag.String("table", "", "要迁移的表")
 	realNameMethod := flag.String("realNameMethod", "", "结构体对应的表名")
 	packageName := flag.String("packageName", "model", "生成的struct包名")
-	tagKey := flag.String("tagKey", "orm", "字段tag的key")
+	tagKey := flag.String("tagKey", "db", "字段tag的key")
 	prefix := flag.String("prefix", "", "表前缀")
 	version := flag.Bool("version", false, "版本号")
 	v := flag.Bool("v", false, "版本号")
@@ -33,12 +35,16 @@ func parser() {
 		return
 	}
 
+
+
 	// 版本号
 	if *version || *v {
 		fmt.Println(fmt.Sprintf("\n version: %s\n %s\n using -h param for more help \n",
 			converter.VERSION, converter.VERSION_TEXT))
 		return
 	}
+
+	log.Printf("flg parse done.... %s", *dsn)
 
 	// 初始化
 	t2t := converter.NewTable2Struct()

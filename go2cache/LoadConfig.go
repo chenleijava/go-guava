@@ -19,21 +19,21 @@ func GetConfig() *RedisConfig {
 	if cfg == nil {
 		once.Do(func() {
 			//loading redis config
-			configData, ee := ioutil.ReadFile(guava.ExePath()+"/resources/config/go2cache.yaml")
+			configData, ee := ioutil.ReadFile(guava.ExePath() + "/resources/config/go2cache.yaml")
 			if ee != nil {
 				//load form base config
-				tmp,ee:=ioutil.ReadFile(guava.ExePath()+"/config/go2cache.yaml")
+				tmp, ee := ioutil.ReadFile(guava.ExePath() + "/config/go2cache.yaml")
 				if ee != nil {
 					log.Panicf("load redis config bad error:%s , config must be in `/resources` or `/config` path !", ee.Error())
 				}
-				configData=tmp
+				configData = tmp
 			}
 
-			cfg=&RedisConfig{} //init config object
+			cfg = &RedisConfig{} //init config object
 
 			err := yaml.Unmarshal(configData, cfg)
-			if err!=nil{
-				log.Fatalf("load redis config bad err:%s",err.Error())
+			if err != nil {
+				log.Fatalf("load redis config bad err:%s", err.Error())
 			}
 
 			go2cacheRegions := cfg.Go2CacheRegions
@@ -45,7 +45,7 @@ func GetConfig() *RedisConfig {
 					}
 					lv := strings.Split(v, ",")
 					s, _ := strconv.Atoi(lv[1])
-					cfg.Regions = append(cfg.Regions, &Region{Name: lv[0], Size: s});
+					cfg.Regions = append(cfg.Regions, &Region{Name: lv[0], Size: s})
 				}
 			}
 		})
@@ -53,17 +53,16 @@ func GetConfig() *RedisConfig {
 	return cfg
 }
 
-
 type RedisConfig struct {
-	Addr string `yaml:"addr"`
-	Password string `yaml:"password"`
-	MinIdleConns int `yaml:"minIdleConns"`
-	PoolSize int `yaml:"poolSize"`
-	Db int `yaml:"db"`
-	Channel string `yaml:"channel"`
-	RedisNameSpace string `yaml:"redisNameSpace"`
-	Psb bool `yaml:"psb"`
-	Go2CacheRegions string `yaml:"go2CacheRegions"`
+	Addr            string    `yaml:"addr"`
+	Password        string    `yaml:"password"`
+	MinIdleConns    int       `yaml:"minIdleConns"`
+	PoolSize        int       `yaml:"poolSize"`
+	Db              int       `yaml:"db"`
+	Channel         string    `yaml:"channel"`
+	RedisNameSpace  string    `yaml:"redisNameSpace"`
+	Psb             bool      `yaml:"psb"`
+	Go2CacheRegions string    `yaml:"go2CacheRegions"`
 	Regions         []*Region `yaml:"-"`
 }
 

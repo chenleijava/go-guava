@@ -16,7 +16,6 @@ type MemoryProvider struct {
 	regions []Region
 }
 
-
 //构建region cache
 func (p *MemoryProvider) BuildCache(region string) (interface{}, error) {
 	p.mu.Lock()

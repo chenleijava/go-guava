@@ -68,14 +68,14 @@ func Remove(s []string, value string) []string {
 }
 
 //clear int map
-func ClearIntMap(mp *map[string]int) () {
+func ClearIntMap(mp *map[string]int) {
 	for k := range *mp {
 		delete(*mp, k)
 	}
 }
 
 //clear string map
-func ClearStringMap(mp *map[string]string) () {
+func ClearStringMap(mp *map[string]string) {
 	for k := range *mp {
 		delete(*mp, k)
 	}

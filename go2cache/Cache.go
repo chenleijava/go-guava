@@ -1,6 +1,5 @@
 package go2cache
 
-
 type Cache interface {
 	//从缓存中获取数据
 	Get(key string) interface{}

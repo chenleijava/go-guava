@@ -15,9 +15,6 @@ func TestGoSet(t *testing.T) {
 	tmpList.PushBack(1)
 	tmpList.PushBack(3)
 
-
-
-
 	tmpListStr, _ := jsoniter.Marshal(tmpList)
 	log.Printf("%s", string(tmpListStr))
 

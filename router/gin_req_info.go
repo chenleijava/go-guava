@@ -23,7 +23,6 @@ type RequestInfo struct {
 	Header       map[string][]string `json:"header"`
 }
 
-
 //read response body
 type bodyWriter struct {
 	gin.ResponseWriter
