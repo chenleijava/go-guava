@@ -1,6 +1,7 @@
 package elasticsql
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"strings"
@@ -100,7 +101,17 @@ func handleSelect(sel *sqlparser.Select) (dsl string, esType string, err error) 
 	if selectExprs != nil {
 		s := sqlparser.String(sel.SelectExprs)
 		if s != "" && s != "*" {
-			resultMap["_source"] = fmt.Sprintf("[%s]", strings.Trim(s, " "))
+			tmp := strings.Split(s, ",")
+			var buf bytes.Buffer
+			for _, ss := range tmp {
+				if buf.Len() != 0 {
+					buf.WriteRune(',')
+				}
+				buf.WriteString("\"")
+				buf.WriteString(strings.TrimSpace(ss))
+				buf.WriteString("\"")
+			}
+			resultMap["_source"] = fmt.Sprintf("[%s]", buf.String())
 		}
 	}
 

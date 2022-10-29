@@ -1,0 +1,22 @@
+{
+  "name": "zinc-example",
+  "shard_num": 3,
+  "storage_type": "disk",
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "default": {
+          "type": "gse_search"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "published": {
+        "type": "date",
+        "sortable": true
+      }
+    }
+  }
+}
