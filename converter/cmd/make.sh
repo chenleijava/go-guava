@@ -12,4 +12,3 @@ win=table2struct-win."$version".exe
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o "$darwin" cli.go
 #CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o "$linux" cli.go
 #CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o "$win" cli.go
-

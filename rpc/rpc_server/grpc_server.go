@@ -5,6 +5,7 @@ import (
 	"github.com/chenleijava/go-guava/zlog"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"log"
 	"net"
 )
 
@@ -19,7 +20,7 @@ type GreeterServer struct{}
 
 // SayHello implements helloworld.GreeterServer
 func (s *GreeterServer) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	return &pb.HelloReply{Message: "form server 收到客户端消息: " + in.Name}, nil
+	return &pb.HelloReply{Message: "resp data : " + in.Name}, nil
 }
 
 //register service
@@ -41,7 +42,7 @@ func main() {
 	if er != nil {
 		_log.Sugar().Fatal(er)
 	}
-	_log.Sugar().Info("grpc server listener:", listener.Addr())
+	log.Printf("listen :%s", listener.Addr().String())
 
 	//start service
 	_ = server.Serve(listener)

@@ -293,7 +293,7 @@ func (t *Table2Struct) getColumns(table ...string) (tableColumns map[string][]co
 	tableColumns = make(map[string][]column)
 	// sql
 	var sqlStr = `SELECT COLUMN_NAME,DATA_TYPE,IS_NULLABLE,TABLE_NAME,COLUMN_COMMENT
-		FROM information_schema.COLUMNS 
+		FROM information_schema.COLUMNS
 		WHERE table_schema = DATABASE()`
 	// 是否指定了具体的table
 	if t.table != "" {

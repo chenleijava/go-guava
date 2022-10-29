@@ -62,6 +62,7 @@ func GinRequestInfo(f func(req *RequestInfo)) gin.HandlerFunc {
 		//done
 		end := time.Now()
 		latency := end.Sub(start) //cost time
+
 		if len(c.Errors) > 0 {
 			// Append error field if this is an erroneous request.
 			for _, e := range c.Errors.Errors() {

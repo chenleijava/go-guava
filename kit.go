@@ -1,7 +1,9 @@
 package guava
 
 import (
+	"crypto/md5"
 	"encoding/binary"
+	"fmt"
 	"github.com/chenleijava/go-guava/bufpool"
 	"log"
 	"os"
@@ -41,7 +43,7 @@ func Offset(page, limit int) int {
 	return (page - 1) * limit
 }
 
-//string to int
+// String2Int string to int
 func String2Int(value string) int {
 	v, e := strconv.Atoi(value)
 	if e != nil {
@@ -51,12 +53,12 @@ func String2Int(value string) int {
 	return v
 }
 
-//int to string
+// Int2String int to string
 func Int2String(value int) string {
 	return strconv.Itoa(value)
 }
 
-// remove from slice
+// Remove remove from slice
 func Remove(s []string, value string) []string {
 	for i, p := range s {
 		if p == value {
@@ -67,14 +69,14 @@ func Remove(s []string, value string) []string {
 	return s
 }
 
-//clear int map
+// ClearIntMap clear int map
 func ClearIntMap(mp *map[string]int) {
 	for k := range *mp {
 		delete(*mp, k)
 	}
 }
 
-//clear string map
+// ClearStringMap clear string map
 func ClearStringMap(mp *map[string]string) {
 	for k := range *mp {
 		delete(*mp, k)
@@ -96,4 +98,19 @@ func DataToBytes(n interface{}, order binary.ByteOrder) []byte {
 		log.Fatalf("err:%s", err.Error())
 	}
 	return buf.Bytes()
+}
+
+//
+// Md5
+// @Description: 计算指定数值的md5
+// @param value
+// @return string
+//
+func Md5(value []byte) string {
+	/**
+	hash := md5.New()
+	hash.Write(value)
+	return hex.EncodeToString(hash.Sum(nil))
+	*/
+	return fmt.Sprintf("%x", md5.Sum(value))
 }

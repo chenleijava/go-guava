@@ -1,4 +1,4 @@
-#### nsq  相关文档 
+#### nsq 相关文档
 
 1. https://zhuanlan.zhihu.com/p/37081073
 
@@ -16,14 +16,13 @@ channel消息传递的通道:
 consumer消息的消费者:
 
 1. consumer 通过 TCPsubscribe 自己需要的 channel
-2. topic 和 channel 都没有预先配置。 topic 由第一次发布消息到命名 topic 的 producer 创建
-  或 第一次通过 subscribe 订阅一个命名 topic 的 consumer 来创建。 channel 被 consumer 第一次 subscribe 订阅到指定的 channel 创建。
+2. topic 和 channel 都没有预先配置。 topic 由第一次发布消息到命名 topic 的 producer 创建 或 第一次通过 subscribe 订阅一个命名 topic 的 consumer 来创建。 channel
+   被 consumer 第一次 subscribe 订阅到指定的 channel 创建。
 3. 多个 consumersubscribe一个 channel，假设所有已连接的客户端处于准备接收消息的状态，每个消息将被传递到一个 随机 的 consumer。
 4. NSQ 支持延时消息， consumer 在配置的延时时间后才能接受相关消息。
 5. Channel在 consumer 退出后并不会删除，这点需要特别注意。
 
-
-###  nsqadmin参数
+### nsqadmin参数
 
 ```text
 Message Queues:
@@ -39,7 +38,7 @@ Messages: Total count of new messages recieved since node startup. 节点起来�
 Rate: The per-second rate of new messages (available when graphite integration is enabled). 每秒的消息数
 ```
 
-#### nsqd命令行参数 
+#### nsqd命令行参数
 
 ```text
 -auth-http-address=: <addr>:<port> 查询授权服务器 (可能会给多次)
@@ -84,19 +83,21 @@ Rate: The per-second rate of new messages (available when graphite integration i
 
 ```
 
-#### nsqlookupd  命令行选项
+#### nsqlookupd 命令行选项
+
 ```text
- 
+
      -http-address="0.0.0.0:4161": <addr>:<port> 监听 HTTP 客户端
      -inactive-producer-timeout=5m0s: 从上次 ping 之后，生产者驻留在活跃列表中的时长
-     -tcp-address="0.0.0.0:4160": TCP 客户端监听的 <addr>:<port> 
+     -tcp-address="0.0.0.0:4160": TCP 客户端监听的 <addr>:<port>
      -broadcast-address: 这个 lookupd 节点的外部地址, (默认是 OS 主机名)
      -tombstone-lifetime=45s: 生产者保持 tombstoned  的时长
      -verbose=false: 允许输出日志
      -version=false: 打印版本信息
-```    
+```
 
-####  nsqadmin命令行选项
+#### nsqadmin命令行选项
+
 ```text
 -graphite-url="": URL to graphite HTTP 地址
 -http-address="0.0.0.0:4171": <addr>:<port> HTTP clients 监听的地址和端口

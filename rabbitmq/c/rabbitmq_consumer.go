@@ -10,7 +10,7 @@ import (
 //https://github.com/rabbitmq/rabbitmq-tutorials/tree/master/go
 var Consumers []*Consumer
 
-//消费者
+//consumer
 type Consumer struct {
 	QueueName           string                          // consumer listen queue
 	Handle              func(data *amqp.Delivery) error // hand mq message

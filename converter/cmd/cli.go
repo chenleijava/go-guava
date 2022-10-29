@@ -35,8 +35,6 @@ func parser() {
 		return
 	}
 
-
-
 	// 版本号
 	if *version || *v {
 		fmt.Println(fmt.Sprintf("\n version: %s\n %s\n using -h param for more help \n",

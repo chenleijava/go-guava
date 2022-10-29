@@ -1,6 +1,6 @@
 module github.com/chenleijava/go-guava
 
-go 1.15
+go 1.16
 
 require (
 	github.com/Jeffail/tunny v0.0.0-20181108205650-4921fff29480
@@ -15,7 +15,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.3.3
 	github.com/gookit/color v1.3.2 // indirect
-	github.com/herryg91/gobatch v0.0.0-20190726112432-54166d458d8b
+	github.com/herryg91/gobatch v0.0.0-20190726112432-54166d458d8b // indirect
 	github.com/influxdata/influxdb1-client v0.0.0-20190402204710-8ff2fc3824fc // indirect
 	github.com/ivpusic/grpool v1.0.0
 	github.com/jfcg/sorty v0.0.0-20190725065343-876548f06d80
@@ -37,7 +37,7 @@ require (
 	github.com/twotwotwo/sorts v0.0.0-20160814051341-bf5c1f2b8553 // indirect
 	github.com/vrischmann/go-metrics-influxdb v0.0.0-20190121110601-4457d7e0175c
 	github.com/xxjwxc/gormt v0.0.0-20201030104547-9a6d72b83141 // indirect
-	go.uber.org/atomic v1.7.0
+	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20200506145744-7e3656a0809f

@@ -36,3 +36,5 @@ zlog/log
 /orm/gormt
 /orm/test.db
 /orm/TestGORMStart_in_github_com_chenleijava_go_guava_orm
+
+go_build_*

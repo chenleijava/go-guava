@@ -1,15 +1,18 @@
-a lib for golang , generate mysql table schema to golang struct  
+a lib for golang , generate mysql table schema to golang struct
 -----
-mysql表结构自动生成golang struct  
+mysql表结构自动生成golang struct
 
 ## github地址
+
 [https://github.com/gohouse/converter](https://github.com/gohouse/converter)
 
 ## 安装
-1. 直接下载可执行文件: [下载地址](https://github.com/gohouse/converter/releases)  
+
+1. 直接下载可执行文件: [下载地址](https://github.com/gohouse/converter/releases)
 2. golang源码包: `go get github.com/gohouse/converter`
 
 ## 示例表结构
+
 ```sql
 CREATE TABLE `prefix_user` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -21,6 +24,7 @@ CREATE TABLE `prefix_user` (
 ```
 
 ## 命令行用法
+
 1. 下载对应平台的可执行文件, [下载地址](https://github.com/gohouse/converter/releases)
 
 2. 命令行执行
@@ -30,6 +34,7 @@ CREATE TABLE `prefix_user` (
     ```
 
 3. 参数说明
+
 ```sh
 -dsn            string 数据库dsn配置
 -enableJsonTag  bool 是否添加json的tag
@@ -42,6 +47,7 @@ CREATE TABLE `prefix_user` (
 ```
 
 ## golang代码简单用法
+
 ```go
 package main
 import (
@@ -58,6 +64,7 @@ func main() {
 ```
 
 ## golang代码详细用法示例
+
 ```go
 package main
 
@@ -100,12 +107,13 @@ func main() {
 		Dsn("root:root@tcp(localhost:3306)/test?charset=utf8").
 		// 执行
 		Run()
-	
+
 	fmt.Println(err)
 }
 ```
 
-result 
+result
+
 ```go
 package model
 

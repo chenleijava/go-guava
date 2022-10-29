@@ -27,7 +27,7 @@ func TestGORMStart(t *testing.T) {
 	// Use GORM API build SQL
 	//https://gorm.io/docs/sql_builder.html
 	var bindTime time.Time
-	row := db.Table(user.TableName()).Select("bind_time").Where("uid=?", "202001").Row()
+	row := db.Table(model.UserTable).Select("bind_time").Where("uid=?", "202001").Row()
 	err := row.Scan(&bindTime)
 	if err != nil {
 
@@ -35,25 +35,17 @@ func TestGORMStart(t *testing.T) {
 
 	//Create Record
 	_now := time.Now()
+
 	_user := model.User{
-		UId:         12,
 		AvatarIcon:  "///",
 		NickName:    "test",
 		Sex:         0,
 		Mobile:      "1738302",
-		WxID:        "1738302",
-		QqID:        "1738302",
 		RoleType:    0,
 		UserStatus:  0,
-		RegTime:     _now,
-		OUId:        0,
-		BindTime:    _now,
-		Birthday:    _now,
-		OpenTime:    _now,
+		RegTime:     &_now,
+		Birthday:    &_now,
 		ChannelName: "test",
-		Balance:     0,
-		PetCount:    0,
-		DeviceID:    "1738302",
 	}
 
 	db.Delete(&_user)
@@ -71,7 +63,6 @@ func TestGORMStart(t *testing.T) {
 	//insert all the data and backfill primary key values, hook methods will be invoked too.
 	var tmpUsers []*model.User
 	_user2 := _user //copy new value
-	_user2.UId = 19
 	//db.Delete(&_user2)
 	tmpUsers = append(tmpUsers, &_user, &_user2)
 

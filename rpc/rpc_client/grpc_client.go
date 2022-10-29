@@ -13,16 +13,9 @@ import (
 func main() {
 
 	//dial conn
-	conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("127.0.0.1:8888", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
-		{
-			_conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
-			if err != nil {
-				log.Fatalf("did not connect: %v", err)
-			}
-			conn = _conn
-		}
 	}
 	//
 	defer conn.Close()
@@ -34,25 +27,24 @@ func main() {
 
 	//init wait group ,wait  goroutine done !
 	wait := &sync.WaitGroup{}
-	wait.Add(1)
-	var i = 0
+	initialSize := 3
+	wait.Add(initialSize)
 	var j = 0
-	for ; j <= 10; j++ {
+	for ; j < initialSize; j++ {
+		tmp := j
 		go func() {
-			for i < 1 {
-				time.Sleep(100 * time.Millisecond)
-				//ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
-				//pass root context
-				response, e := greeterClient.SayHello(context.Background(),
-					&pb.HelloRequest{Name: *proto.String("客户端发送数据go")})
-				if e != nil {
-					log.Println(e)
-				} else {
-					log.Println("响应数据\n", response.GetMessage())
-				}
+			time.Sleep(time.Second)
+			//ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+			//pass root context
+			response, e := greeterClient.SayHello(context.Background(),
+				&pb.HelloRequest{Name: *proto.String("客户端发送数据go")})
+			if e != nil {
+				log.Println(e)
+			} else {
+				log.Printf("order: %d 响应数据: %s", tmp, response.GetMessage())
 			}
+			wait.Done() // current send done!
 		}()
-		log.Printf(">>>>>>>>")
 	}
 	wait.Wait()
 
