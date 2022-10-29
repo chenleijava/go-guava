@@ -149,6 +149,11 @@ func TestBadSQL(t *testing.T) {
 	}
 }
 
+//
+// TestParseSql
+// @Description: 新增支持"_source" 解析
+// @param t
+//
 func TestParseSql(t *testing.T) {
 	dsl, _, _ := Convert("select book,id,`name`,address from user where id=10  order by `time` desc,ad asc limit 1,2")
 	fmt.Println(dsl)
