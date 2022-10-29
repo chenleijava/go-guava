@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  zinc:
+    container_name: zinc
+    image: public.ecr.aws/zinclabs/zinc:latest
+    environment:
+      - ZINC_FIRST_ADMIN_USER=admin
+      - ZINC_FIRST_ADMIN_PASSWORD=admin
+      - ZINC_SHARD_NUM=3
+      - ZINC_PLUGIN_GSE_ENABLE=true
+      - ZINC_PLUGIN_GSE_DICT_EMBED=big
+      - ZINC_PROMETHEUS_ENABLE=true
+    ports:
+      - "4080:4080"
+    volumes:
+      - ./data:/data
