@@ -5,6 +5,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"math"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -41,8 +43,11 @@ func GetDataSource(userName, password, host, dbName string) *gorm.DB {
 			if sqlDb != nil {
 				//https://gorm.io/docs/connecting_to_the_database.html
 				//https://github.com/brettwooldridge/HikariCP
-				sqlDb.SetMaxIdleConns(100)                 //
-				sqlDb.SetMaxOpenConns(200)                 //
+				maxOpenConns := runtime.NumCPU()*2 + 1
+				maxOpenConns = int(math.Max(float64(maxOpenConns), 30))
+				//
+				sqlDb.SetMaxIdleConns(maxOpenConns / 2)    //>=15
+				sqlDb.SetMaxOpenConns(maxOpenConns)        // >=30
 				sqlDb.SetConnMaxIdleTime(time.Minute * 10) // idle num less than max open cons 10 minutes
 				sqlDb.SetConnMaxLifetime(time.Minute * 30) // 30 minutes  Expired connections may be closed lazily before reuse.
 			}
