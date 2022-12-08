@@ -12,7 +12,7 @@ require (
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis v6.15.2+incompatible
-	github.com/go-sql-driver/mysql v1.5.0
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang/protobuf v1.5.0
 	github.com/ivpusic/grpool v1.0.0
 	github.com/jfcg/sorty v0.0.0-20190725065343-876548f06d80
@@ -32,15 +32,14 @@ require (
 	google.golang.org/grpc v1.22.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0
-	gorm.io/driver/mysql v1.0.3
-	gorm.io/driver/sqlite v1.1.3
-	gorm.io/gorm v1.24.0
+	gorm.io/driver/mysql v1.4.4
+	gorm.io/driver/sqlite v1.4.3
+	gorm.io/gorm v1.24.2
 	upper.io/db.v3 v3.5.7+incompatible
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/gin-contrib/logger v0.2.5 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
@@ -52,7 +51,6 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -61,7 +59,6 @@ require (
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/rs/zerolog v1.28.0 // indirect
 	github.com/shawnsmithdev/zermelo v0.0.0-20190712023933-72892ed011e9 // indirect
 	github.com/twotwotwo/sorts v0.0.0-20160814051341-bf5c1f2b8553 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect

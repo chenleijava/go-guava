@@ -104,6 +104,11 @@ func TestGORMStart(t *testing.T) {
 
 }
 
+//
+// show
+// @Description:
+// @param users
+//
 func show(users *[]*model.User) {
 	if users != nil {
 		for _, user := range *users {
